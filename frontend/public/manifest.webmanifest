@@ -1,0 +1,23 @@
+{
+  "name": "Labsense",
+  "short_name": "Labsense",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1217",
+  "theme_color": "#10181e",
+  "description": "Premium mobile-first blood analysis experience.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

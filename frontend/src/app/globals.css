@@ -1,0 +1,156 @@
+@import "tw-animate-css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --background: #f5f7f8;
+  --foreground: #13202a;
+  --surface: #eef2f4;
+  --card: rgba(255, 255, 255, 0.92);
+  --secondary: #e7edf0;
+  --muted-foreground: #60707b;
+  --border: rgba(19, 32, 42, 0.09);
+  --ring: #527286;
+  --danger-soft: #fde8e7;
+  --danger-strong: #9c2b2a;
+  --warning-soft: #fff0e1;
+  --warning-strong: #9d5a13;
+  --success-soft: #e5f4eb;
+  --success-strong: #146444;
+  --status-normal-soft: #e7f3ec;
+  --status-normal-surface: rgba(231, 243, 236, 0.56);
+  --status-normal-border: rgba(20, 100, 68, 0.2);
+  --status-normal-strong: #1a6b49;
+  --status-borderline-soft: #fdf1dd;
+  --status-borderline-surface: rgba(253, 241, 221, 0.62);
+  --status-borderline-border: rgba(157, 90, 19, 0.2);
+  --status-borderline-strong: #8d5a1d;
+  --status-significant-soft: #f9e7e5;
+  --status-significant-surface: rgba(249, 231, 229, 0.62);
+  --status-significant-border: rgba(156, 43, 42, 0.18);
+  --status-significant-strong: #983836;
+  --status-critical-soft: #f4dedd;
+  --status-critical-surface: rgba(244, 222, 221, 0.72);
+  --status-critical-border: rgba(131, 37, 36, 0.24);
+  --status-critical-strong: #7f2e2d;
+  --marker-high-soft: #f9e5e3;
+  --marker-high-surface: rgba(249, 229, 227, 0.46);
+  --marker-high-border: rgba(152, 56, 54, 0.18);
+  --marker-high-strong: #973a39;
+  --marker-low-soft: #fdf0de;
+  --marker-low-surface: rgba(253, 240, 222, 0.48);
+  --marker-low-border: rgba(141, 90, 29, 0.2);
+  --marker-low-strong: #8e5d22;
+  --marker-normal-soft: #e9f3ec;
+  --marker-normal-surface: rgba(233, 243, 236, 0.42);
+  --marker-normal-border: rgba(26, 107, 73, 0.16);
+  --marker-normal-strong: #1d6e4c;
+  --marker-neutral-soft: #edf1f3;
+  --marker-neutral-surface: rgba(237, 241, 243, 0.56);
+  --marker-neutral-border: rgba(96, 112, 123, 0.14);
+  --marker-neutral-strong: #5f717c;
+  --radius: 1rem;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0d1217;
+  --foreground: #ecf0f3;
+  --surface: #0d1217;
+  --card: rgba(23, 31, 39, 0.78);
+  --secondary: #18222d;
+  --muted-foreground: #95a4af;
+  --border: rgba(236, 240, 243, 0.12);
+  --ring: #8aa8bf;
+  --danger-soft: #3a1b1b;
+  --danger-strong: #ffb3ae;
+  --warning-soft: #3d2a16;
+  --warning-strong: #ffc488;
+  --success-soft: #173125;
+  --success-strong: #96dbb9;
+  --status-normal-soft: rgba(34, 72, 52, 0.5);
+  --status-normal-surface: rgba(27, 51, 39, 0.52);
+  --status-normal-border: rgba(150, 219, 185, 0.18);
+  --status-normal-strong: #a1ddb9;
+  --status-borderline-soft: rgba(77, 55, 30, 0.5);
+  --status-borderline-surface: rgba(69, 48, 26, 0.52);
+  --status-borderline-border: rgba(255, 196, 136, 0.18);
+  --status-borderline-strong: #ffc992;
+  --status-significant-soft: rgba(73, 35, 35, 0.56);
+  --status-significant-surface: rgba(65, 30, 30, 0.56);
+  --status-significant-border: rgba(255, 179, 174, 0.16);
+  --status-significant-strong: #ffb8b2;
+  --status-critical-soft: rgba(82, 33, 34, 0.62);
+  --status-critical-surface: rgba(78, 28, 29, 0.64);
+  --status-critical-border: rgba(255, 179, 174, 0.22);
+  --status-critical-strong: #ffc5bf;
+  --marker-high-soft: rgba(75, 34, 35, 0.52);
+  --marker-high-surface: rgba(65, 28, 29, 0.46);
+  --marker-high-border: rgba(255, 184, 178, 0.15);
+  --marker-high-strong: #ffb9b4;
+  --marker-low-soft: rgba(78, 55, 30, 0.52);
+  --marker-low-surface: rgba(69, 48, 27, 0.46);
+  --marker-low-border: rgba(255, 201, 146, 0.16);
+  --marker-low-strong: #ffcc97;
+  --marker-normal-soft: rgba(32, 63, 47, 0.5);
+  --marker-normal-surface: rgba(26, 50, 38, 0.42);
+  --marker-normal-border: rgba(161, 221, 185, 0.14);
+  --marker-normal-strong: #a8dfbd;
+  --marker-neutral-soft: rgba(32, 42, 52, 0.5);
+  --marker-neutral-surface: rgba(26, 36, 44, 0.46);
+  --marker-neutral-border: rgba(149, 164, 175, 0.13);
+  --marker-neutral-strong: #a2b0b9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(100, 128, 145, 0.12), transparent 28%),
+    radial-gradient(circle at 100% 8%, rgba(150, 181, 193, 0.1), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0)),
+    var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  border-color: var(--border);
+}
+
+@keyframes hero-word-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-word-fade {
+  animation: hero-word-fade 320ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word-fade {
+    animation: none;
+  }
+}

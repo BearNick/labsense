@@ -1,0 +1,5021 @@
+{
+  "fixtures": [
+    {
+      "name": "synthetic_ru_clean",
+      "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_ru_clean.pdf",
+      "kind": "synthetic",
+      "notes": "Clean Russian CBC + vitamin D + zinc.",
+      "expected": {
+        "Гемоглобин": 148.1,
+        "Эритроциты": 4.98,
+        "Гематокрит": 41.6,
+        "Тромбоциты": 298.0,
+        "Лейкоциты": 4.19,
+        "Витамин D (25-OH)": 29.0,
+        "Цинк": 8.5
+      }
+    },
+    {
+      "name": "synthetic_en_clean",
+      "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_en_clean.pdf",
+      "kind": "synthetic",
+      "notes": "Clean English CBC with international aliases.",
+      "expected": {
+        "Гемоглобин": 148.1,
+        "Эритроциты": 4.98,
+        "Гематокрит": 41.6,
+        "Тромбоциты": 298.0,
+        "Лейкоциты": 4.19,
+        "Витамин D (25-OH)": 29.0,
+        "Цинк": 8.5
+      }
+    },
+    {
+      "name": "synthetic_mixed_aliases",
+      "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_mixed_aliases.pdf",
+      "kind": "synthetic",
+      "notes": "Russian marker names mixed with Latin aliases.",
+      "expected": {
+        "Гемоглобин": 148.1,
+        "Эритроциты": 4.98,
+        "Гематокрит": 41.6,
+        "Тромбоциты": 298.0,
+        "Лейкоциты": 4.19,
+        "Витамин D (25-OH)": 29.0,
+        "Цинк": 8.5
+      }
+    },
+    {
+      "name": "synthetic_decimal_comma",
+      "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_decimal_comma.pdf",
+      "kind": "synthetic",
+      "notes": "Decimal comma values without changing numeric meaning.",
+      "expected": {
+        "Гемоглобин": 148.1,
+        "Эритроциты": 4.98,
+        "Гематокрит": 41.6,
+        "Тромбоциты": 298.0,
+        "Лейкоциты": 4.19,
+        "Витамин D (25-OH)": 29.0,
+        "Цинк": 8.5
+      }
+    },
+    {
+      "name": "synthetic_scientific_units",
+      "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_scientific_units.pdf",
+      "kind": "synthetic",
+      "notes": "Scientific-count units like 10^12/л and 10^9/л.",
+      "expected": {
+        "Гемоглобин": 148.1,
+        "Эритроциты": 4.98,
+        "Гематокрит": 41.6,
+        "Тромбоциты": 298.0,
+        "Лейкоциты": 4.19,
+        "Витамин D (25-OH)": 29.0,
+        "Цинк": 8.5
+      }
+    },
+    {
+      "name": "real_123_pdf",
+      "pdf_path": "/opt/labsense/backend/tests/fixtures/123.pdf",
+      "kind": "real",
+      "notes": "Golden real-world fixture supplied in the repo.",
+      "expected": {
+        "Гемоглобин": 148.1,
+        "Эритроциты": 4.98,
+        "Гематокрит": 41.6,
+        "Тромбоциты": 298.0,
+        "Лейкоциты": 4.19,
+        "Витамин D (25-OH)": 29.0,
+        "Цинк": 8.5
+      }
+    },
+    {
+      "name": "uploaded_non_lab_pdf",
+      "pdf_path": "/opt/labsense/backend/storage/uploads/cc5d183b651748118c59e89bb902668f.pdf",
+      "kind": "non_lab_control",
+      "notes": "Available uploaded PDF, but not a text-rich lab report.",
+      "expected": {
+        "Гемоглобин": null,
+        "Эритроциты": null,
+        "Гематокрит": null,
+        "Тромбоциты": null,
+        "Лейкоциты": null,
+        "Витамин D (25-OH)": null,
+        "Цинк": null
+      }
+    }
+  ],
+  "benchmarks": [
+    {
+      "fixture": {
+        "name": "synthetic_ru_clean",
+        "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_ru_clean.pdf",
+        "kind": "synthetic",
+        "notes": "Clean Russian CBC + vitamin D + zinc.",
+        "expected": {
+          "Гемоглобин": 148.1,
+          "Эритроциты": 4.98,
+          "Гематокрит": 41.6,
+          "Тромбоциты": 298.0,
+          "Лейкоциты": 4.19,
+          "Витамин D (25-OH)": 29.0,
+          "Цинк": 8.5
+        }
+      },
+      "path_runs": [
+        {
+          "path": "text_inspection_snapshot",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "selection_reason": "strong_text_marker_match;markers=7;refs=7;chars=202;garbage=0.01",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "char_count": 202,
+          "word_count": 63,
+          "meaningful_lines": 7,
+          "numeric_count": 28,
+          "reference_count": 7,
+          "garbage_ratio": 0.0149,
+          "text_pages": 1,
+          "image_pages": 0,
+          "total_pages": 1,
+          "table_count": 0,
+          "table_row_count": 0,
+          "weak": false,
+          "weak_reason": null,
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_text_extract_pdf",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "text_postprocess_pdfplumber_enriched",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "table_count": 0,
+          "table_row_count": 0,
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "umol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_auto",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=strong_text_marker_match;markers=7;refs=7;chars=202;garbage=0.01",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_text",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_text;markers=7;refs=7;chars=202;garbage=0.01",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_vision",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_vision;markers=7;refs=7;chars=202;garbage=0.01",
+          "initial_source": "vision",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_vision_extract",
+          "raw_values": {},
+          "selected_source": "vision",
+          "source": "vision",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [
+            "Direct vision extractor returned no usable markers."
+          ],
+          "failures": [],
+          "weak": true,
+          "weak_reason": "no_usable_markers",
+          "populated_ratio": 0.0,
+          "comparison": {
+            "exact_matches": 0,
+            "expected_marker_total": 7,
+            "all_exact": false,
+            "dropped_markers": [
+              "Гемоглобин",
+              "Эритроциты",
+              "Гематокрит",
+              "Тромбоциты",
+              "Лейкоциты",
+              "Витамин D (25-OH)",
+              "Цинк"
+            ],
+            "malformed_zero_markers": [],
+            "mismatches": {
+              "Гемоглобин": {
+                "expected": 148.1,
+                "observed": null
+              },
+              "Эритроциты": {
+                "expected": 4.98,
+                "observed": null
+              },
+              "Гематокрит": {
+                "expected": 41.6,
+                "observed": null
+              },
+              "Тромбоциты": {
+                "expected": 298.0,
+                "observed": null
+              },
+              "Лейкоциты": {
+                "expected": 4.19,
+                "observed": null
+              },
+              "Витамин D (25-OH)": {
+                "expected": 29.0,
+                "observed": null
+              },
+              "Цинк": {
+                "expected": 8.5,
+                "observed": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "name": "synthetic_en_clean",
+        "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_en_clean.pdf",
+        "kind": "synthetic",
+        "notes": "Clean English CBC with international aliases.",
+        "expected": {
+          "Гемоглобин": 148.1,
+          "Эритроциты": 4.98,
+          "Гематокрит": 41.6,
+          "Тромбоциты": 298.0,
+          "Лейкоциты": 4.19,
+          "Витамин D (25-OH)": 29.0,
+          "Цинк": 8.5
+        }
+      },
+      "path_runs": [
+        {
+          "path": "text_inspection_snapshot",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "selection_reason": "strong_text_marker_match;markers=7;refs=7;chars=189;garbage=0.02",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "char_count": 189,
+          "word_count": 50,
+          "meaningful_lines": 7,
+          "numeric_count": 25,
+          "reference_count": 7,
+          "garbage_ratio": 0.0159,
+          "text_pages": 1,
+          "image_pages": 0,
+          "total_pages": 1,
+          "table_count": 0,
+          "table_row_count": 0,
+          "weak": false,
+          "weak_reason": null,
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_text_extract_pdf",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "text_postprocess_pdfplumber_enriched",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "table_count": 0,
+          "table_row_count": 0,
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Vitamin D 25-OH 29 ng/mL 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Hematocrit 41.60 % 39.0 - 49.0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Hemoglobin 148.10 g/L 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "WBC 4.19 x10^9/L 4.00 - 9.00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Platelets 298 x10^9/L 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "umol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Zinc 8.5 umol/L 8.4 - 23.0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "RBC 4.98 x10^12/L 4.30 - 5.70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_auto",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=strong_text_marker_match;markers=7;refs=7;chars=189;garbage=0.02",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Vitamin D 25-OH 29 ng/mL 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Hematocrit 41.60 % 39.0 - 49.0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Hemoglobin 148.10 g/L 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "WBC 4.19 x10^9/L 4.00 - 9.00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Platelets 298 x10^9/L 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Zinc 8.5 umol/L 8.4 - 23.0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "RBC 4.98 x10^12/L 4.30 - 5.70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_text",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_text;markers=7;refs=7;chars=189;garbage=0.02",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Vitamin D 25-OH 29 ng/mL 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Hematocrit 41.60 % 39.0 - 49.0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Hemoglobin 148.10 g/L 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "WBC 4.19 x10^9/L 4.00 - 9.00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Platelets 298 x10^9/L 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Zinc 8.5 umol/L 8.4 - 23.0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "RBC 4.98 x10^12/L 4.30 - 5.70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_vision",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_vision;markers=7;refs=7;chars=189;garbage=0.02",
+          "initial_source": "vision",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Vitamin D 25-OH 29 ng/mL 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Hematocrit 41.60 % 39.0 - 49.0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Hemoglobin 148.10 g/L 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "WBC 4.19 x10^9/L 4.00 - 9.00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Platelets 298 x10^9/L 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Zinc 8.5 umol/L 8.4 - 23.0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "RBC 4.98 x10^12/L 4.30 - 5.70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_vision_extract",
+          "raw_values": {},
+          "selected_source": "vision",
+          "source": "vision",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [
+            "Direct vision extractor returned no usable markers."
+          ],
+          "failures": [],
+          "weak": true,
+          "weak_reason": "no_usable_markers",
+          "populated_ratio": 0.0,
+          "comparison": {
+            "exact_matches": 0,
+            "expected_marker_total": 7,
+            "all_exact": false,
+            "dropped_markers": [
+              "Гемоглобин",
+              "Эритроциты",
+              "Гематокрит",
+              "Тромбоциты",
+              "Лейкоциты",
+              "Витамин D (25-OH)",
+              "Цинк"
+            ],
+            "malformed_zero_markers": [],
+            "mismatches": {
+              "Гемоглобин": {
+                "expected": 148.1,
+                "observed": null
+              },
+              "Эритроциты": {
+                "expected": 4.98,
+                "observed": null
+              },
+              "Гематокрит": {
+                "expected": 41.6,
+                "observed": null
+              },
+              "Тромбоциты": {
+                "expected": 298.0,
+                "observed": null
+              },
+              "Лейкоциты": {
+                "expected": 4.19,
+                "observed": null
+              },
+              "Витамин D (25-OH)": {
+                "expected": 29.0,
+                "observed": null
+              },
+              "Цинк": {
+                "expected": 8.5,
+                "observed": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "name": "synthetic_mixed_aliases",
+        "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_mixed_aliases.pdf",
+        "kind": "synthetic",
+        "notes": "Russian marker names mixed with Latin aliases.",
+        "expected": {
+          "Гемоглобин": 148.1,
+          "Эритроциты": 4.98,
+          "Гематокрит": 41.6,
+          "Тромбоциты": 298.0,
+          "Лейкоциты": 4.19,
+          "Витамин D (25-OH)": 29.0,
+          "Цинк": 8.5
+        }
+      },
+      "path_runs": [
+        {
+          "path": "text_inspection_snapshot",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "selection_reason": "strong_text_marker_match;markers=7;refs=7;chars=228;garbage=0.01",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "char_count": 228,
+          "word_count": 70,
+          "meaningful_lines": 7,
+          "numeric_count": 28,
+          "reference_count": 7,
+          "garbage_ratio": 0.0132,
+          "text_pages": 1,
+          "image_pages": 0,
+          "total_pages": 1,
+          "table_count": 0,
+          "table_row_count": 0,
+          "weak": false,
+          "weak_reason": null,
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_text_extract_pdf",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "text_postprocess_pdfplumber_enriched",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "table_count": 0,
+          "table_row_count": 0,
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D 25-OH 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит (HCT) 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин (Hb) 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты (WBC) 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты (PLT) 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "umol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк / Zinc 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты (RBC) 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_auto",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=strong_text_marker_match;markers=7;refs=7;chars=228;garbage=0.01",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D 25-OH 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит (HCT) 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин (Hb) 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты (WBC) 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты (PLT) 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк / Zinc 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты (RBC) 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_text",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_text;markers=7;refs=7;chars=228;garbage=0.01",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D 25-OH 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит (HCT) 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин (Hb) 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты (WBC) 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты (PLT) 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк / Zinc 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты (RBC) 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_vision",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_vision;markers=7;refs=7;chars=228;garbage=0.01",
+          "initial_source": "vision",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D 25-OH 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит (HCT) 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин (Hb) 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты (WBC) 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты (PLT) 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк / Zinc 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты (RBC) 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_vision_extract",
+          "raw_values": {},
+          "selected_source": "vision",
+          "source": "vision",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [
+            "Direct vision extractor returned no usable markers."
+          ],
+          "failures": [],
+          "weak": true,
+          "weak_reason": "no_usable_markers",
+          "populated_ratio": 0.0,
+          "comparison": {
+            "exact_matches": 0,
+            "expected_marker_total": 7,
+            "all_exact": false,
+            "dropped_markers": [
+              "Гемоглобин",
+              "Эритроциты",
+              "Гематокрит",
+              "Тромбоциты",
+              "Лейкоциты",
+              "Витамин D (25-OH)",
+              "Цинк"
+            ],
+            "malformed_zero_markers": [],
+            "mismatches": {
+              "Гемоглобин": {
+                "expected": 148.1,
+                "observed": null
+              },
+              "Эритроциты": {
+                "expected": 4.98,
+                "observed": null
+              },
+              "Гематокрит": {
+                "expected": 41.6,
+                "observed": null
+              },
+              "Тромбоциты": {
+                "expected": 298.0,
+                "observed": null
+              },
+              "Лейкоциты": {
+                "expected": 4.19,
+                "observed": null
+              },
+              "Витамин D (25-OH)": {
+                "expected": 29.0,
+                "observed": null
+              },
+              "Цинк": {
+                "expected": 8.5,
+                "observed": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "name": "synthetic_decimal_comma",
+        "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_decimal_comma.pdf",
+        "kind": "synthetic",
+        "notes": "Decimal comma values without changing numeric meaning.",
+        "expected": {
+          "Гемоглобин": 148.1,
+          "Эритроциты": 4.98,
+          "Гематокрит": 41.6,
+          "Тромбоциты": 298.0,
+          "Лейкоциты": 4.19,
+          "Витамин D (25-OH)": 29.0,
+          "Цинк": 8.5
+        }
+      },
+      "path_runs": [
+        {
+          "path": "text_inspection_snapshot",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "selection_reason": "strong_text_marker_match;markers=7;refs=7;chars=217;garbage=0.01",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "char_count": 217,
+          "word_count": 67,
+          "meaningful_lines": 7,
+          "numeric_count": 28,
+          "reference_count": 7,
+          "garbage_ratio": 0.0138,
+          "text_pages": 1,
+          "image_pages": 0,
+          "total_pages": 1,
+          "table_count": 0,
+          "table_row_count": 0,
+          "weak": false,
+          "weak_reason": null,
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_text_extract_pdf",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "text_postprocess_pdfplumber_enriched",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "table_count": 0,
+          "table_row_count": 0,
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30.0 - 100.0",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29,0 нг/мл 30,0 - 100,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "umol/L",
+              "reference_range": "8.40 - 23.00",
+              "source_kind": "line",
+              "source_text": "Цинк 8,50 мкмоль/л 8,40 - 23,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_auto",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=strong_text_marker_match;markers=7;refs=7;chars=217;garbage=0.01",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30.0 - 100.0",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29,0 нг/мл 30,0 - 100,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.40 - 23.00",
+              "source_kind": "line",
+              "source_text": "Цинк 8,50 мкмоль/л 8,40 - 23,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_text",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_text;markers=7;refs=7;chars=217;garbage=0.01",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30.0 - 100.0",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29,0 нг/мл 30,0 - 100,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.40 - 23.00",
+              "source_kind": "line",
+              "source_text": "Цинк 8,50 мкмоль/л 8,40 - 23,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_vision",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_vision;markers=7;refs=7;chars=217;garbage=0.01",
+          "initial_source": "vision",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30.0 - 100.0",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29,0 нг/мл 30,0 - 100,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.40 - 23.00",
+              "source_kind": "line",
+              "source_text": "Цинк 8,50 мкмоль/л 8,40 - 23,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_vision_extract",
+          "raw_values": {},
+          "selected_source": "vision",
+          "source": "vision",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [
+            "Direct vision extractor returned no usable markers."
+          ],
+          "failures": [],
+          "weak": true,
+          "weak_reason": "no_usable_markers",
+          "populated_ratio": 0.0,
+          "comparison": {
+            "exact_matches": 0,
+            "expected_marker_total": 7,
+            "all_exact": false,
+            "dropped_markers": [
+              "Гемоглобин",
+              "Эритроциты",
+              "Гематокрит",
+              "Тромбоциты",
+              "Лейкоциты",
+              "Витамин D (25-OH)",
+              "Цинк"
+            ],
+            "malformed_zero_markers": [],
+            "mismatches": {
+              "Гемоглобин": {
+                "expected": 148.1,
+                "observed": null
+              },
+              "Эритроциты": {
+                "expected": 4.98,
+                "observed": null
+              },
+              "Гематокрит": {
+                "expected": 41.6,
+                "observed": null
+              },
+              "Тромбоциты": {
+                "expected": 298.0,
+                "observed": null
+              },
+              "Лейкоциты": {
+                "expected": 4.19,
+                "observed": null
+              },
+              "Витамин D (25-OH)": {
+                "expected": 29.0,
+                "observed": null
+              },
+              "Цинк": {
+                "expected": 8.5,
+                "observed": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "name": "synthetic_scientific_units",
+        "pdf_path": "/opt/labsense/backend/tests/fixtures/generated/synthetic_scientific_units.pdf",
+        "kind": "synthetic",
+        "notes": "Scientific-count units like 10^12/л and 10^9/л.",
+        "expected": {
+          "Гемоглобин": 148.1,
+          "Эритроциты": 4.98,
+          "Гематокрит": 41.6,
+          "Тромбоциты": 298.0,
+          "Лейкоциты": 4.19,
+          "Витамин D (25-OH)": 29.0,
+          "Цинк": 8.5
+        }
+      },
+      "path_runs": [
+        {
+          "path": "text_inspection_snapshot",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "selection_reason": "strong_text_marker_match;markers=7;refs=10;chars=275;garbage=0.02",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "char_count": 275,
+          "word_count": 91,
+          "meaningful_lines": 10,
+          "numeric_count": 43,
+          "reference_count": 10,
+          "garbage_ratio": 0.0218,
+          "text_pages": 1,
+          "image_pages": 0,
+          "total_pages": 1,
+          "table_count": 0,
+          "table_row_count": 0,
+          "weak": false,
+          "weak_reason": null,
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_text_extract_pdf",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "text_postprocess_pdfplumber_enriched",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "table_count": 0,
+          "table_row_count": 0,
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "WBC 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "PLT 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "umol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "RBC 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_auto",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=strong_text_marker_match;markers=7;refs=10;chars=275;garbage=0.02",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "WBC 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "PLT 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "RBC 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_text",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_text;markers=7;refs=10;chars=275;garbage=0.02",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "WBC 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "PLT 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "RBC 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_vision",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_vision;markers=7;refs=10;chars=275;garbage=0.02",
+          "initial_source": "vision",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "39.0 - 49.0",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 39,0 - 49,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "130 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 130 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.00 - 9.00",
+              "source_kind": "line",
+              "source_text": "WBC 4,19 10^9/л 4,00 - 9,00",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "PLT 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.4 - 23.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,4 - 23,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "4.30 - 5.70",
+              "source_kind": "line",
+              "source_text": "RBC 4,98 10^12/л 4,30 - 5,70",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_vision_extract",
+          "raw_values": {},
+          "selected_source": "vision",
+          "source": "vision",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [
+            "Direct vision extractor returned no usable markers."
+          ],
+          "failures": [],
+          "weak": true,
+          "weak_reason": "no_usable_markers",
+          "populated_ratio": 0.0,
+          "comparison": {
+            "exact_matches": 0,
+            "expected_marker_total": 7,
+            "all_exact": false,
+            "dropped_markers": [
+              "Гемоглобин",
+              "Эритроциты",
+              "Гематокрит",
+              "Тромбоциты",
+              "Лейкоциты",
+              "Витамин D (25-OH)",
+              "Цинк"
+            ],
+            "malformed_zero_markers": [],
+            "mismatches": {
+              "Гемоглобин": {
+                "expected": 148.1,
+                "observed": null
+              },
+              "Эритроциты": {
+                "expected": 4.98,
+                "observed": null
+              },
+              "Гематокрит": {
+                "expected": 41.6,
+                "observed": null
+              },
+              "Тромбоциты": {
+                "expected": 298.0,
+                "observed": null
+              },
+              "Лейкоциты": {
+                "expected": 4.19,
+                "observed": null
+              },
+              "Витамин D (25-OH)": {
+                "expected": 29.0,
+                "observed": null
+              },
+              "Цинк": {
+                "expected": 8.5,
+                "observed": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "name": "real_123_pdf",
+        "pdf_path": "/opt/labsense/backend/tests/fixtures/123.pdf",
+        "kind": "real",
+        "notes": "Golden real-world fixture supplied in the repo.",
+        "expected": {
+          "Гемоглобин": 148.1,
+          "Эритроциты": 4.98,
+          "Гематокрит": 41.6,
+          "Тромбоциты": 298.0,
+          "Лейкоциты": 4.19,
+          "Витамин D (25-OH)": 29.0,
+          "Цинк": 8.5
+        }
+      },
+      "path_runs": [
+        {
+          "path": "text_inspection_snapshot",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "selection_reason": "strong_text_marker_match;markers=7;refs=7;chars=179;garbage=0.02",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "char_count": 179,
+          "word_count": 58,
+          "meaningful_lines": 7,
+          "numeric_count": 28,
+          "reference_count": 7,
+          "garbage_ratio": 0.0168,
+          "text_pages": 1,
+          "image_pages": 0,
+          "total_pages": 1,
+          "table_count": 0,
+          "table_row_count": 0,
+          "weak": false,
+          "weak_reason": null,
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_text_extract_pdf",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "text_postprocess_pdfplumber_enriched",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "warnings": [],
+          "failures": [],
+          "table_count": 0,
+          "table_row_count": 0,
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "36 - 50",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 36 - 50",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "120 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 120 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.0 - 10.0",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,0 - 10,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "umol/L",
+              "reference_range": "8.0 - 18.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,0 - 18,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "3.8 - 5.8",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 3,8 - 5,8",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_auto",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=strong_text_marker_match;markers=7;refs=7;chars=179;garbage=0.02",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "36 - 50",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 36 - 50",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "120 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 120 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.0 - 10.0",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,0 - 10,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.0 - 18.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,0 - 18,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "3.8 - 5.8",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 3,8 - 5,8",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_text",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_text;markers=7;refs=7;chars=179;garbage=0.02",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "36 - 50",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 36 - 50",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "120 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 120 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.0 - 10.0",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,0 - 10,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.0 - 18.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,0 - 18,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "3.8 - 5.8",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 3,8 - 5,8",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_vision",
+          "raw_values": {
+            "Витамин D (25-OH)": 29.0,
+            "Гематокрит": 41.6,
+            "Гемоглобин": 148.1,
+            "Лейкоциты": 4.19,
+            "Тромбоциты": 298.0,
+            "Цинк": 8.5,
+            "Эритроциты": 4.98
+          },
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_vision;markers=7;refs=7;chars=179;garbage=0.02",
+          "initial_source": "vision",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 100,
+          "confidence_level": "high",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_good",
+            "reference_coverage_strong",
+            "unit_coverage_strong",
+            "references_present",
+            "structure_strong",
+            "structure_partially_consistent"
+          ],
+          "confidence_explanation": "Extraction quality looks strong and structurally consistent.",
+          "reference_coverage": 1.0,
+          "unit_coverage": 0.8571,
+          "structural_consistency": 0.619,
+          "warnings": [],
+          "marker_details": {
+            "Витамин D (25-OH)": {
+              "name": "Витамин D (25-OH)",
+              "value": 29.0,
+              "unit": "ng/mL",
+              "reference_range": "30 - 100",
+              "source_kind": "line",
+              "source_text": "Витамин D (25-OH) 29 нг/мл 30 - 100",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Гематокрит": {
+              "name": "Гематокрит",
+              "value": 41.6,
+              "unit": null,
+              "reference_range": "36 - 50",
+              "source_kind": "line",
+              "source_text": "Гематокрит 41,60 % 36 - 50",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 6.0
+            },
+            "Гемоглобин": {
+              "name": "Гемоглобин",
+              "value": 148.1,
+              "unit": "g/L",
+              "reference_range": "120 - 170",
+              "source_kind": "line",
+              "source_text": "Гемоглобин 148,10 г/л 120 - 170",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Лейкоциты": {
+              "name": "Лейкоциты",
+              "value": 4.19,
+              "unit": "x10^9/L",
+              "reference_range": "4.0 - 10.0",
+              "source_kind": "line",
+              "source_text": "Лейкоциты 4,19 10^9/л 4,0 - 10,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Тромбоциты": {
+              "name": "Тромбоциты",
+              "value": 298.0,
+              "unit": "x10^9/L",
+              "reference_range": "150 - 400",
+              "source_kind": "line",
+              "source_text": "Тромбоциты 298 10^9/л 150 - 400",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Цинк": {
+              "name": "Цинк",
+              "value": 8.5,
+              "unit": "µmol/L",
+              "reference_range": "8.0 - 18.0",
+              "source_kind": "line",
+              "source_text": "Цинк 8,5 мкмоль/л 8,0 - 18,0",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            },
+            "Эритроциты": {
+              "name": "Эритроциты",
+              "value": 4.98,
+              "unit": "x10^12/L",
+              "reference_range": "3.8 - 5.8",
+              "source_kind": "line",
+              "source_text": "Эритроциты 4,98 10^12/л 3,8 - 5,8",
+              "reference_recovered": false,
+              "unit_recovered": false,
+              "confidence": 7.5
+            }
+          },
+          "marker_count": 7,
+          "key_markers": {
+            "Гемоглобин": 148.1,
+            "Эритроциты": 4.98,
+            "Гематокрит": 41.6,
+            "Тромбоциты": 298.0,
+            "Лейкоциты": 4.19,
+            "Витамин D (25-OH)": 29.0,
+            "Цинк": 8.5
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_vision_extract",
+          "raw_values": {},
+          "selected_source": "vision",
+          "source": "vision",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [
+            "Direct vision extractor returned no usable markers."
+          ],
+          "failures": [],
+          "weak": true,
+          "weak_reason": "no_usable_markers",
+          "populated_ratio": 0.0,
+          "comparison": {
+            "exact_matches": 0,
+            "expected_marker_total": 7,
+            "all_exact": false,
+            "dropped_markers": [
+              "Гемоглобин",
+              "Эритроциты",
+              "Гематокрит",
+              "Тромбоциты",
+              "Лейкоциты",
+              "Витамин D (25-OH)",
+              "Цинк"
+            ],
+            "malformed_zero_markers": [],
+            "mismatches": {
+              "Гемоглобин": {
+                "expected": 148.1,
+                "observed": null
+              },
+              "Эритроциты": {
+                "expected": 4.98,
+                "observed": null
+              },
+              "Гематокрит": {
+                "expected": 41.6,
+                "observed": null
+              },
+              "Тромбоциты": {
+                "expected": 298.0,
+                "observed": null
+              },
+              "Лейкоциты": {
+                "expected": 4.19,
+                "observed": null
+              },
+              "Витамин D (25-OH)": {
+                "expected": 29.0,
+                "observed": null
+              },
+              "Цинк": {
+                "expected": 8.5,
+                "observed": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "fixture": {
+        "name": "uploaded_non_lab_pdf",
+        "pdf_path": "/opt/labsense/backend/storage/uploads/cc5d183b651748118c59e89bb902668f.pdf",
+        "kind": "non_lab_control",
+        "notes": "Available uploaded PDF, but not a text-rich lab report.",
+        "expected": {
+          "Гемоглобин": null,
+          "Эритроциты": null,
+          "Гематокрит": null,
+          "Тромбоциты": null,
+          "Лейкоциты": null,
+          "Витамин D (25-OH)": null,
+          "Цинк": null
+        }
+      },
+      "path_runs": [
+        {
+          "path": "text_inspection_snapshot",
+          "raw_values": {},
+          "selected_source": "vision",
+          "source": "pdfplumber",
+          "selection_reason": "weak_text_signal;markers=0;refs=0;chars=9648;garbage=0.00",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [],
+          "failures": [],
+          "char_count": 9648,
+          "word_count": 1855,
+          "meaningful_lines": 45,
+          "numeric_count": 130,
+          "reference_count": 0,
+          "garbage_ratio": 0.0041,
+          "text_pages": 1,
+          "image_pages": 1,
+          "total_pages": 1,
+          "table_count": 0,
+          "table_row_count": 0,
+          "weak": true,
+          "weak_reason": "no_usable_markers",
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_text_extract_pdf",
+          "raw_values": {},
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [],
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "text_postprocess_pdfplumber_enriched",
+          "raw_values": {},
+          "selected_source": "text",
+          "source": "pdfplumber",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [],
+          "failures": [],
+          "table_count": 0,
+          "table_row_count": 0,
+          "marker_details": {},
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_auto",
+          "raw_values": {},
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=weak_text_signal;markers=0;refs=0;chars=9648;garbage=0.00",
+          "initial_source": "vision",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 13,
+          "confidence_level": "low",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_empty",
+            "references_missing",
+            "structure_strong",
+            "weak_output_signal"
+          ],
+          "confidence_explanation": "Extraction quality is limited and should be reviewed carefully.",
+          "reference_coverage": 0.0,
+          "unit_coverage": 0.0,
+          "structural_consistency": 0.0,
+          "warnings": [],
+          "marker_details": {},
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_text",
+          "raw_values": {},
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_text;markers=0;refs=0;chars=9648;garbage=0.00",
+          "initial_source": "text",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 13,
+          "confidence_level": "low",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_empty",
+            "references_missing",
+            "structure_strong",
+            "weak_output_signal"
+          ],
+          "confidence_explanation": "Extraction quality is limited and should be reviewed carefully.",
+          "reference_coverage": 0.0,
+          "unit_coverage": 0.0,
+          "structural_consistency": 0.0,
+          "warnings": [],
+          "marker_details": {},
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "source_selection_forced_vision",
+          "raw_values": {},
+          "source": "pdfplumber",
+          "selected_source": "text",
+          "selection_reason": "canonical_text_path;initial=benchmark_forced_vision;markers=0;refs=0;chars=9648;garbage=0.00",
+          "initial_source": "vision",
+          "final_source": "text",
+          "fallback_used": false,
+          "fallback_reason": null,
+          "confidence_score": 13,
+          "confidence_level": "low",
+          "confidence_reasons": [
+            "source_text",
+            "marker_count_empty",
+            "references_missing",
+            "structure_strong",
+            "weak_output_signal"
+          ],
+          "confidence_explanation": "Extraction quality is limited and should be reviewed carefully.",
+          "reference_coverage": 0.0,
+          "unit_coverage": 0.0,
+          "structural_consistency": 0.0,
+          "warnings": [],
+          "marker_details": {},
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "failures": [],
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        },
+        {
+          "path": "direct_vision_extract",
+          "raw_values": {},
+          "selected_source": "vision",
+          "source": "vision",
+          "marker_count": 0,
+          "key_markers": {
+            "Гемоглобин": null,
+            "Эритроциты": null,
+            "Гематокрит": null,
+            "Тромбоциты": null,
+            "Лейкоциты": null,
+            "Витамин D (25-OH)": null,
+            "Цинк": null
+          },
+          "warnings": [
+            "Direct vision extractor returned no usable markers."
+          ],
+          "failures": [
+            "vision_timeout:3s"
+          ],
+          "weak": true,
+          "weak_reason": "no_usable_markers",
+          "populated_ratio": 0.0,
+          "comparison": {
+            "exact_matches": 7,
+            "expected_marker_total": 7,
+            "all_exact": true,
+            "dropped_markers": [],
+            "malformed_zero_markers": [],
+            "mismatches": {}
+          }
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "text_inspection_snapshot": {
+      "fixtures": [
+        {
+          "fixture": "synthetic_ru_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_en_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_mixed_aliases",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_decimal_comma",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_scientific_units",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "real_123_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "uploaded_non_lab_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        }
+      ],
+      "exact_fixture_count": 7,
+      "total_exact_matches": 49,
+      "total_expected_markers": 49,
+      "total_dropped_markers": 0,
+      "total_malformed_zero_markers": 0,
+      "warnings": 0,
+      "failures": 0,
+      "exact_match_rate": 1.0
+    },
+    "direct_text_extract_pdf": {
+      "fixtures": [
+        {
+          "fixture": "synthetic_ru_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_en_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_mixed_aliases",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_decimal_comma",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_scientific_units",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "real_123_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "uploaded_non_lab_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        }
+      ],
+      "exact_fixture_count": 7,
+      "total_exact_matches": 49,
+      "total_expected_markers": 49,
+      "total_dropped_markers": 0,
+      "total_malformed_zero_markers": 0,
+      "warnings": 0,
+      "failures": 0,
+      "exact_match_rate": 1.0
+    },
+    "text_postprocess_pdfplumber_enriched": {
+      "fixtures": [
+        {
+          "fixture": "synthetic_ru_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_en_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_mixed_aliases",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_decimal_comma",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_scientific_units",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "real_123_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "uploaded_non_lab_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        }
+      ],
+      "exact_fixture_count": 7,
+      "total_exact_matches": 49,
+      "total_expected_markers": 49,
+      "total_dropped_markers": 0,
+      "total_malformed_zero_markers": 0,
+      "warnings": 0,
+      "failures": 0,
+      "exact_match_rate": 1.0
+    },
+    "source_selection_auto": {
+      "fixtures": [
+        {
+          "fixture": "synthetic_ru_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_en_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_mixed_aliases",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_decimal_comma",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_scientific_units",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "real_123_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "uploaded_non_lab_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        }
+      ],
+      "exact_fixture_count": 7,
+      "total_exact_matches": 49,
+      "total_expected_markers": 49,
+      "total_dropped_markers": 0,
+      "total_malformed_zero_markers": 0,
+      "warnings": 0,
+      "failures": 0,
+      "exact_match_rate": 1.0
+    },
+    "source_selection_forced_text": {
+      "fixtures": [
+        {
+          "fixture": "synthetic_ru_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_en_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_mixed_aliases",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_decimal_comma",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_scientific_units",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "real_123_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "uploaded_non_lab_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        }
+      ],
+      "exact_fixture_count": 7,
+      "total_exact_matches": 49,
+      "total_expected_markers": 49,
+      "total_dropped_markers": 0,
+      "total_malformed_zero_markers": 0,
+      "warnings": 0,
+      "failures": 0,
+      "exact_match_rate": 1.0
+    },
+    "source_selection_forced_vision": {
+      "fixtures": [
+        {
+          "fixture": "synthetic_ru_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_en_clean",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_mixed_aliases",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_decimal_comma",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_scientific_units",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "real_123_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "uploaded_non_lab_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        }
+      ],
+      "exact_fixture_count": 7,
+      "total_exact_matches": 49,
+      "total_expected_markers": 49,
+      "total_dropped_markers": 0,
+      "total_malformed_zero_markers": 0,
+      "warnings": 0,
+      "failures": 0,
+      "exact_match_rate": 1.0
+    },
+    "direct_vision_extract": {
+      "fixtures": [
+        {
+          "fixture": "synthetic_ru_clean",
+          "all_exact": false,
+          "exact_matches": 0,
+          "expected_marker_total": 7,
+          "dropped_markers": [
+            "Гемоглобин",
+            "Эритроциты",
+            "Гематокрит",
+            "Тромбоциты",
+            "Лейкоциты",
+            "Витамин D (25-OH)",
+            "Цинк"
+          ],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_en_clean",
+          "all_exact": false,
+          "exact_matches": 0,
+          "expected_marker_total": 7,
+          "dropped_markers": [
+            "Гемоглобин",
+            "Эритроциты",
+            "Гематокрит",
+            "Тромбоциты",
+            "Лейкоциты",
+            "Витамин D (25-OH)",
+            "Цинк"
+          ],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_mixed_aliases",
+          "all_exact": false,
+          "exact_matches": 0,
+          "expected_marker_total": 7,
+          "dropped_markers": [
+            "Гемоглобин",
+            "Эритроциты",
+            "Гематокрит",
+            "Тромбоциты",
+            "Лейкоциты",
+            "Витамин D (25-OH)",
+            "Цинк"
+          ],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_decimal_comma",
+          "all_exact": false,
+          "exact_matches": 0,
+          "expected_marker_total": 7,
+          "dropped_markers": [
+            "Гемоглобин",
+            "Эритроциты",
+            "Гематокрит",
+            "Тромбоциты",
+            "Лейкоциты",
+            "Витамин D (25-OH)",
+            "Цинк"
+          ],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "synthetic_scientific_units",
+          "all_exact": false,
+          "exact_matches": 0,
+          "expected_marker_total": 7,
+          "dropped_markers": [
+            "Гемоглобин",
+            "Эритроциты",
+            "Гематокрит",
+            "Тромбоциты",
+            "Лейкоциты",
+            "Витамин D (25-OH)",
+            "Цинк"
+          ],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "real_123_pdf",
+          "all_exact": false,
+          "exact_matches": 0,
+          "expected_marker_total": 7,
+          "dropped_markers": [
+            "Гемоглобин",
+            "Эритроциты",
+            "Гематокрит",
+            "Тромбоциты",
+            "Лейкоциты",
+            "Витамин D (25-OH)",
+            "Цинк"
+          ],
+          "malformed_zero_markers": []
+        },
+        {
+          "fixture": "uploaded_non_lab_pdf",
+          "all_exact": true,
+          "exact_matches": 7,
+          "expected_marker_total": 7,
+          "dropped_markers": [],
+          "malformed_zero_markers": []
+        }
+      ],
+      "exact_fixture_count": 1,
+      "total_exact_matches": 7,
+      "total_expected_markers": 49,
+      "total_dropped_markers": 42,
+      "total_malformed_zero_markers": 0,
+      "warnings": 7,
+      "failures": 1,
+      "exact_match_rate": 0.1429
+    }
+  },
+  "environment": {
+    "openai_api_key_present": true,
+    "font_path": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+  }
+}

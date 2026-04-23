@@ -1,0 +1,67 @@
+openapi: 3.1.0
+info:
+  title: Labsense Minimal API
+  version: 0.1.0
+  description: Minimal API wrapper around existing backend parser and interpreter modules.
+servers:
+  - url: http://localhost:8000
+paths:
+  /health:
+    get:
+      summary: Healthcheck
+      responses:
+        "200":
+          description: Service is available
+  /upload-lab-pdf:
+    post:
+      summary: Upload and parse a PDF blood test
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                language:
+                  type: string
+                  example: en
+      responses:
+        "200":
+          description: Parsed structured lab values
+        "400":
+          description: Invalid file type
+        "422":
+          description: No lab values extracted
+  /interpret-lab-data:
+    post:
+      summary: Generate interpretation from structured lab values
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                age:
+                  type: integer
+                  nullable: true
+                gender:
+                  type: string
+                  nullable: true
+                language:
+                  type: string
+                  example: en
+                raw_values:
+                  type: object
+                  additionalProperties:
+                    type: number
+                    nullable: true
+      responses:
+        "200":
+          description: Interpretation text
+        "503":
+          description: Interpreter not initialized (e.g. missing env)
