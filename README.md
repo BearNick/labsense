@@ -38,16 +38,3 @@ It is not a diagnosis and does not replace medical advice.
 ```bash
 cd /opt/labsense
 uvicorn api.main:app --host 127.0.0.1 --port 8000
-
-## Frontend entrypoint
-
-cd /opt/labsense/frontend
-pnpm install
-pnpm dev
-
-Current scope
-
-* Supports PDF uploads.
-* Focuses on blood test reports.
-* Keeps parsing, interpretation, lifestyle recommendations, and UI as separate layers.
-* Designed as an early UAT-ready MVP.
