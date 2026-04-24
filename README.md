@@ -1,36 +1,53 @@
-# LabApp PWA Migration
- 
- # Labsense
+# Labsense
 
-AI-powered analysis of laboratory reports (PDF)
+AI-powered analysis of laboratory reports (PDF).
 
-Upload your lab report → get structured markers → clinical interpretation → lifestyle insights
-Production-oriented scaffold around the existing Telegram bot parser and interpreter.
+Upload your lab report → get structured markers → clinical interpretation → lifestyle insights.
+
+## Try it
+
+https://labsense.app
+
+## What it does
+
+Labsense helps users understand laboratory reports by extracting markers from PDF files and generating a structured, medically cautious interpretation.
+
+Current features:
+- PDF lab report upload
+- Marker extraction
+- Reference range detection
+- Risk/status summary
+- AI interpretation
+- Lifestyle recommendations
+- EN / RU / ES interface
+- Stripe and PayPal support
+
+## Disclaimer
+
+Labsense provides informational analysis only.  
+It is not a diagnosis and does not replace medical advice.
 
 ## Structure
 
-- `frontend/`: Next.js App Router PWA shell with Tailwind and shadcn/ui config.
-- `backend/`: existing Python code plus `app/` FastAPI wrapper that imports the current parser/interpreter modules.
-- `api/`: explicit API contract for frontend-backend integration.
+- `frontend/`: Next.js App Router frontend with Tailwind UI.
+- `backend/`: Python parser, interpreter, clinical consistency logic, and tests.
+- `api/`: FastAPI upload and analysis API used by the frontend.
 
 ## Backend entrypoint
 
 ```bash
-cd /opt/labapp/backend
-uvicorn app.main:app --reload
-```
+cd /opt/labsense
+uvicorn api.main:app --host 127.0.0.1 --port 8000
 
 ## Frontend entrypoint
 
-```bash
-cd /opt/labapp/frontend
-npm install
-npm run dev
-```
+cd /opt/labsense/frontend
+pnpm install
+pnpm dev
 
-## Current scope
+Current scope
 
-- Keeps `backend/parser/` and `backend/interpreter/` intact.
-- Adds upload, parse, interpret, auth, and payment-link routes.
-- Uses temporary files for parsing and deletes them automatically.
-- Stores scaffold analysis records locally for MVP history simulation.
+* Supports PDF uploads.
+* Focuses on blood test reports.
+* Keeps parsing, interpretation, lifestyle recommendations, and UI as separate layers.
+* Designed as an early UAT-ready MVP.
