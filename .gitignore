@@ -75,3 +75,5 @@ backend/tests/fixtures/generated/
 # =========================
 *.tar.gz
 *.zip
+.codex/
+frontend/.codex/
