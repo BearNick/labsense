@@ -1,5 +1,10 @@
 # LabApp PWA Migration
+ 
+ # Labsense
 
+AI-powered analysis of laboratory reports (PDF)
+
+Upload your lab report → get structured markers → clinical interpretation → lifestyle insights
 Production-oriented scaffold around the existing Telegram bot parser and interpreter.
 
 ## Structure
