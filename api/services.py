@@ -22,11 +22,13 @@ from parser.source_selection import (  # noqa: E402
 )
 from parser.config import MAX_PDF_PAGES  # noqa: E402
 from parser.format_normalization import preprocess_extracted_data  # noqa: E402
-from parser.marker_metadata import get_marker_metadata  # noqa: E402
 from parser.postprocess import MarkerDetail, extract_legacy_text_with_details  # noqa: E402
-from app.services.clinical_consistency import build_pre_llm_validated_context  # noqa: E402
+from app.services.clinical_consistency import build_pre_llm_validated_context, enforce_final_consistency  # noqa: E402
+from app.services.display_semantics import resolve_lab_value_display  # noqa: E402
 from app.services.interpretation_payload import normalize_interpretation_markers  # noqa: E402
 from app.services.interpretation_validation import DecisionPlan, ParseContext  # noqa: E402
+from app.services.lifestyle_recommendations import generate_lifestyle_recommendations  # noqa: E402
+from interpreter.risk import assess_risk_details, compute_risk_status  # noqa: E402
 
 MIN_MARKERS_FOR_INTERPRETATION = 5
 EXTRACTION_FAILURE_MESSAGE = "Не удалось корректно извлечь данные из отчёта"
@@ -40,18 +42,14 @@ def build_lab_value_payloads(
     payloads: list[dict[str, object | None]] = []
 
     for name, value in raw_values.items():
-        metadata = get_marker_metadata(name) or {}
         detail = marker_details.get(name)
+        unit, reference_range = resolve_lab_value_display(name, detail)
         payloads.append(
             {
                 "name": name,
                 "value": value,
-                "unit": detail.unit if detail and detail.unit else metadata.get("unit"),
-                "reference_range": (
-                    detail.reference_range
-                    if detail and detail.reference_range
-                    else metadata.get("reference_range")
-                ),
+                "unit": unit,
+                "reference_range": reference_range,
                 "status": "unknown",
                 "category": "general",
             }
@@ -254,7 +252,14 @@ def interpret_lab_data(payload: dict[str, object]) -> str:
 
 
 def build_risk_status(payload: dict[str, object]) -> dict[str, object] | None:
-    return None
+    normalized_payload = _normalize_interpretation_payload(payload)
+    validated_context = build_pre_llm_validated_context(normalized_payload)
+    if _should_gate_coverage_only_interpretation(validated_context):
+        return None
+    return compute_risk_status(
+        normalized_payload,
+        str(normalized_payload.get("language", "en")),
+    )
 
 
 def execute_interpretation_flow(
@@ -276,6 +281,7 @@ def execute_interpretation_flow(
         return {
             "interpretation": _coverage_only_gate_message(str(normalized_payload.get("language", "en"))),
             "risk_status": None,
+            "lifestyle_recommendations": None,
             "plan": gated_plan,
             "meta": _build_marker_integrity_meta(
                 normalized_payload=normalized_payload,
@@ -308,15 +314,39 @@ def execute_interpretation_flow(
             },
         ) from exc
 
+    try:
+        lifestyle_recommendations = generate_lifestyle_recommendations(
+            normalized_payload,
+            language=str(normalized_payload.get("language", "en")),
+            risk_status=None,
+        )
+    except Exception:
+        lifestyle_recommendations = None
+
+    language = str(normalized_payload.get("language", "en"))
+    raw_risk_status = compute_risk_status(normalized_payload, language)
+    abnormal_markers = assess_risk_details(normalized_payload, language).abnormal_markers
+    final_interpretation, risk_status, validated_findings, consistency_issues = enforce_final_consistency(
+        interpretation,
+        payload=normalized_payload,
+        abnormal_markers=abnormal_markers,
+        risk_status=raw_risk_status,
+        language=language,
+    )
+    meta = _build_marker_integrity_meta(
+        normalized_payload=normalized_payload,
+        validated_context=validated_context,
+        plan=plan,
+    )
+    meta["validated_findings"] = validated_findings
+    meta["consistency_issues"] = consistency_issues
+
     return {
-        "interpretation": interpretation,
-        "risk_status": None,
+        "interpretation": final_interpretation,
+        "risk_status": risk_status,
+        "lifestyle_recommendations": lifestyle_recommendations,
         "plan": plan,
-        "meta": _build_marker_integrity_meta(
-            normalized_payload=normalized_payload,
-            validated_context=validated_context,
-            plan=plan,
-        ),
-        "validated_findings": validated_context,
-        "consistency_issues": [],
+        "meta": meta,
+        "validated_findings": validated_findings,
+        "consistency_issues": consistency_issues,
     }

@@ -6,6 +6,7 @@ from unittest.mock import patch
 sys.path.insert(0, "/opt/labsense/backend")
 
 from parser.extract_pdf import (  # noqa: E402
+    _is_simple_scalar_row,
     extract_lab_data_from_pdf,
     convert_value_safely,
     extract_reference_range,
@@ -236,6 +237,200 @@ class ExtractPdfRegressionTests(unittest.TestCase):
     def test_layout_concatenation_guard_rejects_corrupted_result_plus_reference_values(self) -> None:
         self.assertEqual(extract_value("Platelets 309 150-450 10^9/L", "Тромбоциты", "platelets"), 309.0)
         self.assertEqual(extract_value("RBC 53 4.2-5.6 10^12/L", "Эритроциты", "rbc"), 53.0)
+
+    def test_primary_value_selection_stops_before_reference_digits(self) -> None:
+        cases = {
+            "ALT 9.2 U/L < 33": ("ALT", "alt", 9.2),
+            "AST 11.7 U/L < 32": ("AST", "ast", 11.7),
+            "Glucose 4.84 mmol/L 3.9 - 6.1": ("Глюкоза", "glucose", 4.84),
+            "IgE 79.3 МЕ/мл < 100": ("IgE", "ige", 79.3),
+        }
+
+        for line, (metric_name, alias, expected) in cases.items():
+            self.assertEqual(extract_value(line, metric_name, alias), expected)
+
+        self.assertNotEqual(extract_value("ALT 9.2 U/L < 33", "ALT", "alt"), 50429.2)
+        self.assertNotEqual(extract_value("AST 11.7 U/L < 32", "AST", "ast"), 5.041)
+        self.assertNotEqual(extract_value("Glucose 4.84 mmol/L 3.9 - 6.1", "Глюкоза", "glucose"), 5.023)
+        self.assertNotEqual(extract_value("IgE 79.3 МЕ/мл < 100", "IgE", "ige"), 5054001)
+
+    def test_simple_single_line_rows_bypass_candidate_scoring_with_positional_value_selection(self) -> None:
+        cases = {
+            "АЛТ 9.2 Ед/л < 33": ("АЛТ", "алт", 9.2, 5.042),
+            "АСТ 11.7 Ед/л < 32": ("АСТ", "аст", 11.7, 5.041),
+            "Глюкоза 4.84 ммоль/л 4.11 - 6.1": ("Глюкоза", "глюкоза", 4.84, 5.023),
+            "Иммуноглобулин IgE общий 79.3 МЕ/мл < 100": ("IgE", "ige", 79.3, 5.054),
+            "АТ-ТГ 55.6 МЕ/мл 0 - 115": ("anti-TG", "ат-тг", 55.6, 6.017),
+            "АТ-ТПО 44.80 МЕ/мл 0 - 34": ("anti-TPO", "ат-тпо", 44.8, 6.045),
+            "Мочевина 3.7 ммоль/л 2.6 - 6.4": ("Мочевина", "мочевина", 3.7, 5.017),
+            "Общий белок 69.0 г/л 64 - 83": ("Общий белок", "общий белок", 69.0, 5.01),
+        }
+
+        for line, (metric_name, alias, expected, corrupted) in cases.items():
+            self.assertEqual(extract_value(line, metric_name, alias), expected)
+            self.assertNotEqual(extract_value(line, metric_name, alias), corrupted)
+
+    def test_simple_scalar_row_classifier_is_structural_not_marker_whitelist_based(self) -> None:
+        simple_rows = {
+            "ALT 9.2 U/L < 33": ("ALT", " 9.2 U/L < 33"),
+            "AST 11.7 U/L < 32": ("AST", " 11.7 U/L < 32"),
+            "Glucose 4.84 mmol/L 4.11 - 6.1": ("Глюкоза", " 4.84 mmol/L 4.11 - 6.1"),
+            "IgE 79.3 IU/mL < 100": ("IgE", " 79.3 IU/mL < 100"),
+            "anti-TG 55.6 U/mL 0 - 115": ("anti-TG", " 55.6 U/mL 0 - 115"),
+            "anti-TPO 44.80 U/mL 0 - 34": ("anti-TPO", " 44.80 U/mL 0 - 34"),
+            "Urea 3.7 mmol/L 2.6 - 6.4": ("Мочевина", " 3.7 mmol/L 2.6 - 6.4"),
+            "Total Protein 69.0 g/L 64 - 83": ("Общий белок", " 69.0 g/L 64 - 83"),
+            "Creatinine 84 umol/L 44 - 80": ("Креатинин", " 84 umol/L 44 - 80"),
+            "Sodium 140 mmol/L 136 - 145": ("Натрий", " 140 mmol/L 136 - 145"),
+        }
+        non_simple_rows = {
+            "RBC 4.98 x10^12/L": ("Эритроциты", " 4.98 x10^12/L"),
+            "WBC 6.2 x10^9/L": ("Лейкоциты", " 6.2 x10^9/L"),
+            "NEU % 33.2 50-70 %": ("Нейтрофилы %", " % 33.2 50-70 %"),
+            "Neutrophils 3.3 10^9/L": ("Нейтрофилы абс.", " 3.3 10^9/L"),
+            "TSH 2.1 mIU/L\nSee text": ("TSH", " 2.1 mIU/L\nSee text"),
+            "ALT Смотри текст": ("ALT", " Смотри текст"),
+        }
+
+        for line, (metric_name, source_text) in simple_rows.items():
+            self.assertTrue(_is_simple_scalar_row(line, source_text, metric_name))
+
+        for line, (metric_name, source_text) in non_simple_rows.items():
+            self.assertFalse(_is_simple_scalar_row(line, source_text, metric_name))
+
+    def test_generic_simple_scalar_rows_keep_closest_value_before_unit(self) -> None:
+        lines = [
+            "АЛТ 9.2 Ед/л < 33",
+            "АСТ 11.7 Ед/л < 32",
+            "Глюкоза 4.84 ммоль/л 4.11 - 6.1",
+            "Иммуноглобулин IgE общий 79.3 МЕ/мл < 100",
+            "АТ-ТГ 55.6 МЕ/мл 0 - 115",
+            "АТ-ТПО 44.80 МЕ/мл 0 - 34",
+            "Мочевина 3.7 ммоль/л 2.6 - 6.4",
+            "Общий белок 69.0 г/л 64 - 83",
+        ]
+
+        extracted = self._extract_fixture_lines(lines)
+
+        self.assertEqual(extracted["ALT"], 9.2)
+        self.assertEqual(extracted["AST"], 11.7)
+        self.assertEqual(extracted["Глюкоза"], 4.84)
+        self.assertEqual(extracted["IgE"], 79.3)
+        self.assertEqual(extracted["anti-TG"], 55.6)
+        self.assertEqual(extracted["anti-TPO"], 44.8)
+        self.assertEqual(extracted["Мочевина"], 3.7)
+        self.assertEqual(extracted["Общий белок"], 69.0)
+
+    def test_generic_simple_scalar_rows_keep_unit_adjacent_result_token_when_references_follow_unit(self) -> None:
+        cases = {
+            "ALT 9.2 U/L < 33": ("ALT", "alt", 9.2),
+            "AST 11.7 U/L < 32": ("AST", "ast", 11.7),
+            "Glucose 4.84 mmol/L 4.11 - 6.1": ("Глюкоза", "glucose", 4.84),
+            "IgE 79.3 IU/mL < 100": ("IgE", "ige", 79.3),
+            "anti-TG 55.6 U/mL 0 - 115": ("anti-TG", "anti-tg", 55.6),
+            "anti-TPO 44.80 U/mL 0 - 34": ("anti-TPO", "anti-tpo", 44.8),
+            "Urea 3.7 mmol/L 2.6 - 6.4": ("Мочевина", "urea", 3.7),
+            "Total Protein 69.0 g/L 64 - 83": ("Общий белок", "total protein", 69.0),
+        }
+
+        for line, (metric_name, alias, expected) in cases.items():
+            self.assertEqual(extract_value(line, metric_name, alias), expected)
+
+    def test_generic_simple_scalar_rows_do_not_degrade_into_later_reference_digits(self) -> None:
+        protected_cases = {
+            "ALT 9.2 U/L < 33": ("ALT", "alt", {33.0, 50429.2}),
+            "AST 11.7 U/L < 32": ("AST", "ast", {32.0, 5.041}),
+            "Glucose 4.84 mmol/L 4.11 - 6.1": ("Глюкоза", "glucose", {4.11, 6.1, 5.023}),
+            "IgE 79.3 IU/mL < 100": ("IgE", "ige", {100.0, 5054001.0}),
+            "anti-TG 55.6 U/mL 0 - 115": ("anti-TG", "anti-tg", {0.0, 115.0, 6.017}),
+            "anti-TPO 44.80 U/mL 0 - 34": ("anti-TPO", "anti-tpo", {0.0, 34.0, 6.045}),
+            "Urea 3.7 mmol/L 2.6 - 6.4": ("Мочевина", "urea", {2.6, 6.4, 5.017}),
+            "Total Protein 69.0 g/L 64 - 83": ("Общий белок", "total protein", {64.0, 83.0, 5.01}),
+        }
+
+        for line, (metric_name, alias, forbidden_values) in protected_cases.items():
+            value = extract_value(line, metric_name, alias)
+            self.assertNotIn(value, forbidden_values)
+
+    def test_localized_simple_scalar_units_are_recognized_by_override_path(self) -> None:
+        self.assertEqual(extract_unit("Ед/л"), "U/L")
+        self.assertEqual(extract_unit("МЕ/мл"), "IU/mL")
+        self.assertEqual(extract_unit("ммоль/л"), "mmol/L")
+        self.assertEqual(extract_unit("г/л"), "g/L")
+        self.assertEqual(extract_unit("мкмоль/л"), "umol/L")
+
+        cases = {
+            "АЛТ 9.2 Ед/л < 33": ("АЛТ", "алт", 9.2),
+            "АСТ 11.7 Ед/л < 32": ("АСТ", "аст", 11.7),
+            "Иммуноглобулин IgE общий 79.3 МЕ/мл < 100": ("IgE", "ige", 79.3),
+            "АТ-ТГ 55.6 МЕ/мл 0 - 115": ("anti-TG", "ат-тг", 55.6),
+            "АТ-ТПО 44.80 МЕ/мл 0 - 34": ("anti-TPO", "ат-тпо", 44.8),
+        }
+
+        for line, (metric_name, alias, expected) in cases.items():
+            self.assertEqual(extract_value(line, metric_name, alias), expected)
+
+    def test_simple_scalar_rows_parse_leading_numeric_portion_of_annotated_tokens(self) -> None:
+        cases = {
+            "АТ-ТПО 44.80++ МЕ/мл 0 - 34": ("anti-TPO", "ат-тпо", 44.8),
+            "Токсокароз IgG 2.11+ коэф.позитив. 0 - 1": ("IgG", "igg", 2.11),
+            "ЭКБ 36.3++ нг/мл < 24.0": ("ЭКБ", "экб", 36.3),
+        }
+
+        for line, (metric_name, alias, expected) in cases.items():
+            self.assertEqual(extract_value(line, metric_name, alias), expected)
+
+    def test_simple_scalar_override_can_ignore_one_leading_numeric_noise_token(self) -> None:
+        cases = {
+            "Глюкоза 5.023 4.84 ммоль/л 4.11 - 6.1": ("Глюкоза", "глюкоза", 4.84),
+            "Мочевина 5.017 3.7 ммоль/л 2.6 - 6.4": ("Мочевина", "мочевина", 3.7),
+            "Общий белок 5.01 69.0 г/л 64 - 83": ("Общий белок", "общий белок", 69.0),
+        }
+
+        for line, (metric_name, alias, expected) in cases.items():
+            self.assertEqual(extract_value(line, metric_name, alias), expected)
+
+    def test_simple_scalar_override_can_ignore_one_leading_numeric_noise_token_for_cyrillic_units(self) -> None:
+        cases = {
+            "АЛТ 5.042 9.2 Ед/л < 33": ("АЛТ", "алт", 9.2),
+            "АСТ 5.041 11.7 Ед/л < 32": ("АСТ", "аст", 11.7),
+            "Иммуноглобулин IgE общий 5.054 79.3 МЕ/мл < 100": ("IgE", "ige", 79.3),
+            "АТ-ТГ 6.017 55.6 МЕ/мл 0 - 115": ("anti-TG", "ат-тг", 55.6),
+            "АТ-ТПО 6.045 44.80 МЕ/мл 0 - 34": ("anti-TPO", "ат-тпо", 44.8),
+        }
+
+        for line, (metric_name, alias, expected) in cases.items():
+            self.assertEqual(extract_value(line, metric_name, alias), expected)
+
+    def test_simple_scalar_override_anchors_to_detected_unit_and_ignores_all_earlier_numbers(self) -> None:
+        cases = {
+            "Глюкоза 1.111 5.023 4.84 ммоль/л 4.11 - 6.1": ("Глюкоза", "глюкоза", 4.84),
+            "Мочевина 0.500 5.017 3.7 ммоль/л 2.6 - 6.4": ("Мочевина", "мочевина", 3.7),
+            "Общий белок 2.000 5.01 69.0 г/л 64 - 83": ("Общий белок", "общий белок", 69.0),
+            "IgE 1.000 5.054 79.3 МЕ/мл < 100": ("IgE", "ige", 79.3),
+            "АТ-ТГ 2.000 6.017 55.6 МЕ/мл 0 - 115": ("anti-TG", "ат-тг", 55.6),
+            "АТ-ТПО 3.000 6.045 44.80 МЕ/мл 0 - 34": ("anti-TPO", "ат-тпо", 44.8),
+        }
+
+        for line, (metric_name, alias, expected) in cases.items():
+            self.assertEqual(extract_value(line, metric_name, alias), expected)
+
+    def test_scientific_notation_and_existing_anemia_baselines_remain_unchanged(self) -> None:
+        self.assertEqual(extract_value("RBC 4.98 10^12/L", "Эритроциты", "rbc"), 4.98)
+        self.assertEqual(extract_value("PLT 298 10^9/L", "Тромбоциты", "plt"), 298.0)
+        anemia_lines = [
+            "HGB 82 g/L",
+            "RBC 2.61 x10^12/L",
+            "HCT 26.4 %",
+            "MCV 101.1 fL",
+        ]
+
+        extracted = self._extract_fixture_lines(anemia_lines)
+
+        self.assertEqual(extracted["Гемоглобин"], 82.0)
+        self.assertEqual(extracted["Эритроциты"], 2.61)
+        self.assertEqual(extracted["Гематокрит"], 26.4)
+        self.assertEqual(extracted["MCV"], 101.1)
 
     def test_percentage_rows_do_not_absorb_adjacent_reference_digits_from_layout(self) -> None:
         self.assertEqual(extract_value("NEUTROPHILS 22 1-80 %", "Нейтрофилы %", "neutrophils"), 22.0)

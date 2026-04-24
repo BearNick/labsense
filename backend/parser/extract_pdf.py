@@ -1,3 +1,4 @@
+import logging
 import re
 from functools import lru_cache
 from typing import Optional, Tuple, List
@@ -9,6 +10,9 @@ try:
     import pdfplumber
 except Exception:  # pragma: no cover - optional dependency in test env
     pdfplumber = None
+
+
+logger = logging.getLogger(__name__)
 
 # Пытаемся подключить анонимайзер, если есть
 try:
@@ -305,6 +309,7 @@ _UNIT_ALIASES = {
     "pg": "pg",
     "pg/ml": "pg/mL",
     "iu/ml": "IU/mL",
+    "ме/мл": "IU/mL",
     "u/l": "U/L",
     "ед/л": "U/L",
     "g/l": "g/L",
@@ -326,11 +331,24 @@ _UNIT_ALIASES = {
     "10^12/l": "x10^12/L",
     "x10^9/l": "x10^9/L",
     "x10^12/l": "x10^12/L",
+    "109/l": "x10^9/L",
+    "1012/l": "x10^12/L",
+    "x109/l": "x10^9/L",
+    "x1012/l": "x10^12/L",
     "10^9/л": "x10^9/L",
     "10^12/л": "x10^12/L",
     "x10^9/л": "x10^9/L",
     "x10^12/л": "x10^12/L",
 }
+
+_UNIT_PATTERN = re.compile(
+    r"\b(?:g/l|г/л|g/dl|mg/l|мг/л|mg/dl|mg\s+alb/mmol|mg/mmol|mg/g|mmol/l|ммоль/л|"
+    r"mmol/mol|mol/l|umol/l|µmol/l|μmol/l|мкмоль/л|ng/ml|нг/мл|fl|pg|pg/ml|iu/ml|"
+    r"ме/мл|u/l|ед/л|ml/min/1\.73 ?m2|mm/h|мм/ч|k/[uµμ]l|m/[uµμ]l|%|x10\^?9/[lл]|"
+    r"x10\^?12/[lл]|10\^9/[lл]|10\^12/[lл]|x10[⁹9]/[lл]|x10[¹1][²2]/[lл]|"
+    r"10[⁹9]/[lл]|10[¹1][²2]/[lл])\b",
+    flags=re.IGNORECASE,
+)
 
 # -----------------------
 # Публичная функция
@@ -466,6 +484,21 @@ def extract_value(line: str, metric_name: str, matched_alias: str | None = None)
     мягко нормализуем.
     """
     source_text = _slice_after_alias(line, matched_alias) if matched_alias else line
+    positional_override = _extract_simple_positional_override_value(
+        line=line,
+        source_text=source_text,
+        metric_name=metric_name,
+        matched_alias=matched_alias,
+    )
+    if positional_override is not None:
+        logger.debug(
+            "value_selection marker=%s path=simple_scalar_early_return value=%s",
+            metric_name,
+            positional_override,
+        )
+        return positional_override
+
+    first_standalone_value = _extract_first_standalone_value(source_text)
     primary_candidates = _extract_primary_result_candidates(source_text)
     source_candidates = _parse_candidates(source_text)
     candidates = source_candidates or _parse_candidates(line)
@@ -475,14 +508,17 @@ def extract_value(line: str, metric_name: str, matched_alias: str | None = None)
 
     detected_unit = extract_unit(line)
     reference_range = extract_reference_range(line)
-    raw = primary_candidates[0] if primary_candidates else candidates[0]
+    simple_positional_value = _extract_simple_positional_value(source_text)
+    raw = simple_positional_value if simple_positional_value is not None else first_standalone_value
+    if raw is None:
+        raw = primary_candidates[0] if primary_candidates else candidates[0]
 
-    if _is_percentage_metric(metric_name):
+    if simple_positional_value is None and _is_percentage_metric(metric_name):
         percentage_primary = _select_percentage_primary_result(primary_candidates)
         if percentage_primary is not None:
             raw = percentage_primary
 
-    if primary_candidates and candidates and _looks_like_layout_concatenated_value(
+    if simple_positional_value is None and primary_candidates and candidates and _looks_like_layout_concatenated_value(
         parsed_value=candidates[0],
         primary_value=primary_candidates[0],
         metric_name=metric_name,
@@ -490,6 +526,12 @@ def extract_value(line: str, metric_name: str, matched_alias: str | None = None)
         reference_range=reference_range,
     ):
         raw = primary_candidates[0]
+
+    if simple_positional_value is None and first_standalone_value is not None and _looks_like_corrupted_primary_value(
+        parsed_value=raw,
+        fallback_value=first_standalone_value,
+    ):
+        raw = first_standalone_value
 
     # Decimal-fix is only allowed when the corrected value is the only clearly plausible reading.
     fixed = _choose_value_with_decimal_fix(
@@ -502,6 +544,12 @@ def extract_value(line: str, metric_name: str, matched_alias: str | None = None)
 
     # Нормализация единиц при явном контексте (очень мягкая)
     fixed = _unit_adjust_if_needed(fixed, line, metric_name)
+
+    logger.debug(
+        "value_selection marker=%s path=smart value=%s",
+        metric_name,
+        fixed,
+    )
 
     return fixed
 
@@ -597,12 +645,8 @@ def extract_reference_range(line: str) -> Optional[str]:
 
 
 def extract_unit(line: str) -> Optional[str]:
-    normalized_line = _normalize_unit_text(line)
-    unit_match = re.search(
-        r"\b(?:g/l|г/л|g/dl|mg/l|мг/л|mg/dl|mg\s+alb/mmol|mg/mmol|mg/g|mmol/l|ммоль/л|mmol/mol|mol/l|umol/l|µmol/l|μmol/l|мкмоль/л|ng/ml|нг/мл|fl|pg|pg/ml|iu/ml|u/l|ед/л|ml/min/1\.73 ?m2|mm/h|мм/ч|k/[uµμ]l|m/[uµμ]l|%|x10\^?9/[lл]|x10\^?12/[lл]|10\^9/[lл]|10\^12/[lл])\b",
-        normalized_line,
-        flags=re.IGNORECASE,
-    )
+    normalized_line = _normalize_unit_search_text(line)
+    unit_match = _UNIT_PATTERN.search(normalized_line)
     if not unit_match:
         return None
 
@@ -625,6 +669,204 @@ def _extract_primary_result_candidates(text: str) -> List[float]:
     return _parse_candidates(primary_segment)
 
 
+def _extract_first_standalone_value(text: str) -> float | None:
+    match = _extract_first_standalone_value_match(text)
+    if match is None:
+        return None
+    return match[0]
+
+
+def _extract_first_standalone_value_match(text: str) -> tuple[float, int, int] | None:
+    if not text:
+        return None
+
+    primary_segment = _extract_primary_result_segment(text) or text
+    clean = _normalize_numeric_text(primary_segment)
+
+    for match in re.finditer(r"(?<![\w/])[-+]?\d+(?:[.,]\d+)?", clean):
+        token = match.group(0)
+        tail = clean[match.end():]
+        joined, consumed = _maybe_extend_numeric_token_with_consumed(token, tail)
+        normalized = _normalize_number_token(joined)
+        if normalized is None:
+            continue
+        try:
+            return float(normalized), match.start(), match.end() + consumed
+        except Exception:
+            continue
+
+    return None
+
+
+def _select_simple_scalar_value_match(text: str) -> tuple[float, int, int] | None:
+    if not text:
+        return None
+
+    unit_span = _find_unit_span(text)
+    if unit_span is None:
+        return None
+
+    unit_start, _ = unit_span
+    clean = _normalize_numeric_text(text)
+    selected_match: tuple[float, int, int] | None = None
+
+    search_start = 0
+    pattern = re.compile(r"(?<![\w/])[-+]?\d+(?:[.,]\d+)?")
+    while True:
+        match = pattern.search(clean, search_start)
+        if match is None:
+            break
+
+        token = match.group(0)
+        tail = clean[match.end():]
+        joined, consumed = _maybe_extend_numeric_token_with_consumed(token, tail)
+        normalized = _normalize_number_token(joined)
+        next_search_start = match.end() + max(consumed, 0)
+        if next_search_start <= search_start:
+            next_search_start = match.end()
+
+        if normalized is None:
+            search_start = next_search_start
+            continue
+
+        try:
+            candidate = float(normalized), match.start(), match.end() + consumed
+        except Exception:
+            search_start = next_search_start
+            continue
+
+        _, _, value_end = candidate
+        if value_end <= unit_start:
+            if _is_ignorable_value_to_unit_gap(text[value_end:unit_start]):
+                selected_match = candidate
+
+        search_start = next_search_start
+
+    return selected_match
+
+
+def _maybe_extend_numeric_token(token: str, tail: str) -> str:
+    return _maybe_extend_numeric_token_with_consumed(token, tail)[0]
+
+
+def _maybe_extend_numeric_token_with_consumed(token: str, tail: str) -> tuple[str, int]:
+    continuation = re.match(r"\s+(\d+)(?!\s*[\^/])", tail)
+    if continuation is None:
+        return token, 0
+
+    next_part = continuation.group(1)
+    remainder = tail[continuation.end():]
+    remainder_lstrip = remainder.lstrip()
+
+    if re.match(r"[-–—]\s*\d", remainder_lstrip):
+        return token, 0
+
+    if len(next_part) == 3 and token.lstrip("+-").isdigit():
+        return f"{token} {next_part}", continuation.end()
+
+    unsigned = token.lstrip("+-")
+    if "." not in unsigned and "," not in unsigned and len(next_part) <= 2:
+        return f"{token} {next_part}", continuation.end()
+
+    return token, 0
+
+
+def _extract_simple_positional_value(text: str) -> float | None:
+    if not text:
+        return None
+
+    value_match = _extract_first_standalone_value_match(text)
+    unit_span = _find_unit_span(text)
+    if value_match is None or unit_span is None:
+        return None
+
+    value, _, value_end = value_match
+    unit_start, unit_end = unit_span
+    if value_end > unit_start:
+        return None
+
+    if not _is_ignorable_value_to_unit_gap(text[value_end:unit_start]):
+        return None
+
+    trailing = text[unit_end:]
+    if not _looks_like_simple_reference_tail(trailing):
+        return None
+
+    return value
+
+
+def _extract_simple_positional_override_value(
+    line: str,
+    source_text: str,
+    metric_name: str,
+    matched_alias: str | None,
+) -> float | None:
+    del matched_alias
+
+    if not _is_simple_scalar_row(
+        line=line,
+        source_text=source_text,
+        metric_name=metric_name,
+    ):
+        return None
+
+    unit_span = _find_unit_span(source_text)
+    if unit_span is None:
+        return None
+
+    value_match = _select_simple_scalar_value_match(source_text)
+    if value_match is None:
+        return None
+
+    value, _, value_end = value_match
+    unit_start, unit_end = unit_span
+    if value_end > unit_start:
+        return None
+
+    if not _is_ignorable_value_to_unit_gap(source_text[value_end:unit_start]):
+        return None
+
+    trailing = source_text[unit_end:]
+    if not _looks_like_simple_reference_tail(trailing):
+        return None
+
+    return value
+
+
+def _is_simple_scalar_row(line: str, source_text: str, metric_name: str) -> bool:
+    if not _is_structurally_simple_linear_row(line):
+        return False
+
+    metric = metric_name.strip()
+    if metric in _DIFFERENTIAL_ABSOLUTE_MARKERS or metric in _PERCENTAGE_RESULT_MARKERS:
+        return False
+    if metric in {"RE-LYMP abs", "AS-LYMP abs", "Нормобласты"}:
+        return False
+
+    value_match = _select_simple_scalar_value_match(source_text)
+    if value_match is None:
+        return False
+
+    _, _, value_end = value_match
+    unit_span = _find_unit_span(source_text)
+    if unit_span is None:
+        return False
+
+    unit_start, unit_end = unit_span
+    if value_end > unit_start:
+        return False
+
+    if not _is_ignorable_value_to_unit_gap(source_text[value_end:unit_start]):
+        return False
+
+    detected_unit = extract_unit(source_text) or extract_unit(line)
+    if detected_unit == "%":
+        return False
+
+    trailing = source_text[unit_end:]
+    return _looks_like_simple_reference_tail(trailing)
+
+
 def _extract_primary_result_segment(text: str) -> str:
     if not text:
         return text
@@ -639,6 +881,36 @@ def _extract_primary_result_segment(text: str) -> str:
         cutoff = min(cutoff, unit_start)
 
     return text[:cutoff]
+
+
+def _is_structurally_simple_linear_row(text: str) -> bool:
+    normalized = _normalize_for_match(text)
+    if "\n" in text or "\r" in text:
+        return False
+    if _scientific_notation_present(text):
+        return False
+    if any(token in normalized for token in ("смотри текст", "see text", "refer to comment")):
+        return False
+    return True
+
+
+def _find_simple_override_unit_span(text: str, value_end: int) -> tuple[int, int] | None:
+    unit_span = _find_unit_span(text)
+    if unit_span is not None and unit_span[0] >= value_end:
+        return unit_span
+
+    tail = text[value_end:]
+    fallback_match = re.match(r"\s*([A-Za-zА-Яа-яЁёµμ%][A-Za-zА-Яа-яЁё0-9µμ/%.^-]*)", tail)
+    if fallback_match is None:
+        return None
+
+    unit_text = fallback_match.group(1)
+    if not re.search(r"[A-Za-zА-Яа-яЁёµμ%]", unit_text):
+        return None
+
+    start = value_end + fallback_match.start(1)
+    end = value_end + fallback_match.end(1)
+    return start, end
 
 
 def _normalize_for_match(value: str) -> str:
@@ -704,6 +976,27 @@ def _looks_like_layout_concatenated_value(
         return False
 
     return parsed_digits.startswith(primary_digits)
+
+
+def _looks_like_corrupted_primary_value(parsed_value: float, fallback_value: float) -> bool:
+    if parsed_value == fallback_value:
+        return False
+
+    parsed_text = format(parsed_value, ".15g")
+    fallback_text = format(fallback_value, ".15g")
+    parsed_digits = re.sub(r"\D", "", parsed_text)
+    fallback_digits = re.sub(r"\D", "", fallback_text)
+
+    if not parsed_digits or not fallback_digits:
+        return False
+
+    if len(parsed_digits) >= max(len(fallback_digits) + 3, 7):
+        return True
+
+    if len(parsed_digits) > len(fallback_digits) and fallback_digits in parsed_digits:
+        return True
+
+    return False
 
 
 def _value_matches_reference_range(value: float, reference_range: str | None) -> bool:
@@ -882,33 +1175,53 @@ def _normalize_numeric_text(value: str) -> str:
 
 def _normalize_unit_text(value: str) -> str:
     normalized = _normalize_numeric_text(value)
-    return (
+    normalized = (
         normalized.replace("×", "x")
         .replace("х", "x")
         .replace("Х", "x")
         .replace("⁹", "^9")
         .replace("¹²", "^12")
-        .replace("мкмоль/л", "umol/l")
-        .replace("ммоль/л", "mmol/l")
-        .replace("мг/л", "mg/l")
-        .replace("нг/мл", "ng/ml")
-        .replace("ед/л", "u/l")
-        .replace("г/л", "g/l")
-        .replace("мм/ч", "mm/h")
-        .replace("/л", "/l")
+    )
+    localized_unit_patterns = (
+        (r"(?i)\bмкмоль\s*/\s*л\b", "umol/l"),
+        (r"(?i)\bммоль\s*/\s*л\b", "mmol/l"),
+        (r"(?i)\bмг\s*/\s*л\b", "mg/l"),
+        (r"(?i)\bнг\s*/\s*мл\b", "ng/ml"),
+        (r"(?i)\bг\s*/\s*л\b", "g/l"),
+        (r"(?i)\bед\s*/\s*л\b", "u/l"),
+        (r"(?i)\bме\s*/\s*мл\b", "iu/ml"),
+    )
+    for pattern, replacement in localized_unit_patterns:
+        normalized = re.sub(pattern, replacement, normalized)
+    normalized = normalized.replace("мм/ч", "mm/h").replace("/л", "/l")
+    return normalized
+
+
+def _normalize_unit_search_text(value: str) -> str:
+    return (
+        _normalize_numeric_text(value)
+        .replace("×", "x")
+        .replace("х", "x")
+        .replace("Х", "x")
+        .replace("⁹", "9")
+        .replace("¹", "1")
+        .replace("²", "2")
     )
 
 
 def _find_unit_start(text: str) -> int | None:
-    normalized_text = _normalize_unit_text(text)
-    unit_match = re.search(
-        r"\b(?:g/l|г/л|g/dl|mg/l|мг/л|mg/dl|mg\s+alb/mmol|mg/mmol|mg/g|mmol/l|ммоль/л|mmol/mol|mol/l|umol/l|µmol/l|μmol/l|мкмоль/л|ng/ml|нг/мл|fl|pg|pg/ml|iu/ml|u/l|ед/л|ml/min/1\.73 ?m2|mm/h|мм/ч|k/[uµμ]l|m/[uµμ]l|%|x10\^?9/[lл]|x10\^?12/[lл]|10\^9/[lл]|10\^12/[lл])\b",
-        normalized_text,
-        flags=re.IGNORECASE,
-    )
+    unit_span = _find_unit_span(text)
+    if unit_span is None:
+        return None
+    return unit_span[0]
+
+
+def _find_unit_span(text: str) -> tuple[int, int] | None:
+    normalized_text = _normalize_unit_search_text(text)
+    unit_match = _UNIT_PATTERN.search(normalized_text)
     if unit_match is None:
         return None
-    return unit_match.start()
+    return unit_match.start(), unit_match.end()
 
 
 def _find_reference_start(text: str) -> int | None:
@@ -948,6 +1261,28 @@ def _extract_inline_parenthetical_reference(line: str) -> str | None:
         if re.fullmatch(r"\d+(?:[.,]\d+)?\s*-\s*\d+(?:[.,]\d+)?", candidate):
             return re.sub(r"\s+", " ", candidate).replace(",", ".").strip()
     return None
+
+
+def _looks_like_simple_reference_tail(text: str) -> bool:
+    clean = _normalize_numeric_text(text).strip()
+    if not clean:
+        return True
+
+    allowed_patterns = (
+        r"[<>≤≥]=?\s*\d+(?:[.,]\d+)?",
+        r"\d+(?:[.,]\d+)?\s*-\s*\d+(?:[.,]\d+)?",
+        r"\(\s*[<>≤≥]=?\s*\d+(?:[.,]\d+)?\s*\)",
+        r"\(\s*\d+(?:[.,]\d+)?\s*-\s*\d+(?:[.,]\d+)?\s*\)",
+        r"\d+(?:[.,]\d+)?\s+\d+(?:[.,]\d+)?",
+    )
+    return any(re.fullmatch(pattern, clean) for pattern in allowed_patterns)
+
+
+def _is_ignorable_value_to_unit_gap(text: str) -> bool:
+    clean = _normalize_numeric_text(text).strip()
+    if not clean:
+        return True
+    return re.fullmatch(r"(?:\+\+?|\-\-?)", clean) is not None
 
 
 def _normalize_number_token(token: str) -> str | None:

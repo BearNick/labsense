@@ -8,32 +8,31 @@ import { AbnormalMarkersCard } from "@/components/labsense/abnormal-markers-card
 import { AnalysisSummaryCard } from "@/components/labsense/analysis-summary-card";
 import { DisclaimerNote } from "@/components/labsense/disclaimer-note";
 import { InterpretationCard } from "@/components/labsense/interpretation-card";
+import { LifestyleRecommendationsCard } from "@/components/labsense/lifestyle-recommendations-card";
 import { PageShell } from "@/components/labsense/page-shell";
 import { RecommendationsCard } from "@/components/labsense/recommendations-card";
+import { ResultsPaymentCTA } from "@/components/labsense/results-payment-cta";
 import { readAnalysisSession, readAnalysisSessionLocale } from "@/lib/analysis-session";
 import { buildMarkerRenderingState } from "@/lib/marker-rendering";
-import { buildSummaryMessaging } from "@/lib/analysis-transform";
+import type { Locale } from "@/lib/i18n";
 import type { AnalysisSessionData } from "@/lib/types";
 
 export default function ResultsPage() {
-  const { locale, messages, setLocale } = useI18n();
+  const { locale: currentUiLanguage, messages } = useI18n();
   const [result, setResult] = useState<AnalysisSessionData | null>(null);
+  const [reportLanguage, setReportLanguage] = useState<Locale | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const sessionLocale = readAnalysisSessionLocale();
-    const data = readAnalysisSession();
-    if (data && sessionLocale && sessionLocale !== locale) {
-      setLocale(sessionLocale);
-    }
-    setResult(data);
+    setResult(readAnalysisSession());
+    setReportLanguage(readAnalysisSessionLocale());
     setLoading(false);
-  }, [locale, setLocale]);
+  }, []);
 
   if (loading) {
     return (
       <PageShell title={messages.results.title} subtitle={messages.results.loadingSubtitle}>
-        <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 text-sm leading-6 text-[var(--muted-foreground)] shadow-panel">
+        <article className="text-theme-body rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 text-sm leading-6 shadow-panel">
           {messages.results.loadingBody}
         </article>
       </PageShell>
@@ -44,7 +43,7 @@ export default function ResultsPage() {
     return (
       <PageShell title={messages.results.title} subtitle={messages.results.emptySubtitle}>
         <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 shadow-panel">
-          <p className="text-sm leading-6 text-[var(--muted-foreground)]">
+          <p className="text-theme-body text-sm leading-6">
             {messages.results.emptyBody}
           </p>
           <Link
@@ -58,20 +57,7 @@ export default function ResultsPage() {
     );
   }
 
-  const localizedSummary = {
-    ...result.summary,
-    ...buildSummaryMessaging({
-      extractedCount: result.parseMeta.extractedCount,
-      warnings: result.parseMeta.warnings,
-      markers: result.markers,
-      riskStatus: result.riskStatus,
-      locale,
-      extractionIssue: result.parseMeta.extractionIssue,
-      decisionKind: result.parseMeta.decisionKind,
-      overviewText: result.summary.overview,
-      confidenceText: result.summary.confidence
-    })
-  };
+  const effectiveReportLanguage = reportLanguage ?? currentUiLanguage;
   const markerRendering = buildMarkerRenderingState({
     markers: result.markers,
     abnormalMarkers: result.abnormalMarkers
@@ -79,13 +65,22 @@ export default function ResultsPage() {
 
   return (
     <PageShell title={messages.results.title} subtitle={messages.results.subtitle}>
-      <AnalysisSummaryCard summary={localizedSummary} riskStatus={result.riskStatus} parseMeta={result.parseMeta} />
+      <AnalysisSummaryCard
+        summary={result.summary}
+        riskStatus={result.riskStatus}
+        reportLanguage={effectiveReportLanguage}
+        parseMeta={result.parseMeta}
+      />
       <InterpretationCard
-        interpretation={result.interpretation}
+        interpretation={{
+          ...result.interpretation,
+          text: result.interpretation.text
+        }}
         riskStatus={result.riskStatus}
         extractionIssue={result.parseMeta.extractionIssue}
         limited={result.parseMeta.decisionKind === "limited"}
       />
+      <LifestyleRecommendationsCard text={result.lifestyleRecommendations} />
       <RecommendationsCard
         items={result.recommendations}
         riskStatus={result.riskStatus}
@@ -97,6 +92,7 @@ export default function ResultsPage() {
         allMarkersCount={markerRendering.allMarkersCount}
         extractionIssue={result.parseMeta.extractionIssue}
       />
+      <ResultsPaymentCTA />
       <DisclaimerNote />
     </PageShell>
   );

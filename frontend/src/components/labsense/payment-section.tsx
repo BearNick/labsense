@@ -39,10 +39,10 @@ export function PaymentSection({ links, eyebrow, title, description, features = 
       {eyebrow ? (
         <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted-foreground)]">{eyebrow}</p>
       ) : null}
-      <h3 className="inline-flex items-center gap-2 text-lg font-semibold text-[var(--foreground)]">
+      <h2 className="inline-flex items-center gap-2 text-lg font-semibold text-[var(--foreground)]">
         <CreditCard className="h-4 w-4" />
         {resolvedTitle}
-      </h3>
+      </h2>
       <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">
         {resolvedDescription}
       </p>

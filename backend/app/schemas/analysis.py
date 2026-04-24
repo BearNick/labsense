@@ -64,6 +64,7 @@ class RiskStatusPayload(BaseModel):
 class InterpretationResponse(BaseModel):
     summary: str
     risk_status: RiskStatusPayload | None = None
+    lifestyle_recommendations: str | None = None
     recommendations: list[str] = Field(default_factory=list)
     follow_up_tests: list[str] = Field(default_factory=list)
     meta: dict[str, object] = Field(default_factory=dict)

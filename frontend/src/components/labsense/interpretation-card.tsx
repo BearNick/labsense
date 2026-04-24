@@ -14,60 +14,96 @@ interface InterpretationCardProps {
   limited?: boolean;
 }
 
-const hiddenSectionKeys = new Set<InterpretationSectionKey>(["nextSteps", "optionalImprovements"]);
-
 export function InterpretationCard({ interpretation, riskStatus, extractionIssue = false, limited = false }: InterpretationCardProps) {
   const { messages } = useI18n();
   const appearance = getStatusAppearance(resolveStatusTone(riskStatus, extractionIssue || limited));
+  const sections = parseInterpretationSections(interpretation.text);
 
   if (interpretation.status !== "ready") {
     return (
       <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-5 shadow-panel md:p-7">
-        <h3 className="inline-flex items-center gap-2 text-lg font-semibold text-[var(--foreground)]">
+        <h2 className="inline-flex items-center gap-2 text-lg font-semibold text-[var(--foreground)]">
           <FileText className="h-4 w-4" />
           {messages.interpretationCard.title}
-        </h3>
-        <p className="mt-4 rounded-[1.4rem] bg-[var(--background)] p-4 text-sm leading-6 text-[var(--muted-foreground)]">
+        </h2>
+        <p className="bg-theme-subtle text-theme-body mt-4 rounded-[1.4rem] p-4 text-sm leading-6 dark:bg-[var(--background)]">
           {interpretation.error ?? messages.interpretationCard.unavailable}
         </p>
       </article>
     );
   }
 
-  const localizedTitles: Record<InterpretationSectionKey, string> = messages.interpretationCard.sections;
-  const sections = parseInterpretationSections(interpretation.text).filter(
-    (section) => !section.key || !hiddenSectionKeys.has(section.key)
-  );
-
   return (
     <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-5 shadow-panel md:p-7">
-      <h3 className="inline-flex items-center gap-2 text-lg font-semibold text-[var(--foreground)]">
+      <h2 className="inline-flex items-center gap-2 text-lg font-semibold text-[var(--foreground)]">
         <FileText className="h-4 w-4" />
         {messages.interpretationCard.title}
-      </h3>
-      <div className="mt-5 space-y-4">
-        {sections.map((section, index) => (
-          <section
-            key={`${section.key ?? "body"}-${index}`}
-            className={
-              index === 0
-                ? `rounded-[1.5rem] border p-4 ${appearance.panel}`
-                : "rounded-[1.4rem] border border-[var(--border)] bg-[var(--background)]/55 p-4"
+      </h2>
+      <div className={`mt-5 rounded-[1.5rem] border p-4 ${appearance.panel}`}>
+        <div className="space-y-5 text-sm leading-6 text-[var(--foreground)]">
+          {sections.map((section, index) => {
+            if (!section.key) {
+              return (
+                <div key={`freeform-${index}`} className="space-y-2">
+                  {section.lines.map((line, lineIndex) => (
+                    <p key={`freeform-line-${lineIndex}`}>{line}</p>
+                  ))}
+                </div>
+              );
             }
-          >
-            {section.key ? (
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
-                {localizedTitles[section.key]}
-              </p>
-            ) : null}
-            <div className="mt-2 space-y-2 text-sm leading-6 text-[var(--foreground)]">
-              {section.lines.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-            </div>
-          </section>
-        ))}
+
+            return (
+              <section key={`${section.key}-${index}`} className="space-y-2.5">
+                <h3 className={getSectionHeadingClassName(section.key)}>
+                  {messages.interpretationCard.sections[section.key]}
+                </h3>
+                <div className="space-y-2.5">
+                  {section.key === "keyObservations"
+                    ? section.lines.map((line, lineIndex) => {
+                        const detail = splitObservationLine(line);
+                        if (!detail) {
+                          return <p key={`observation-${lineIndex}`}>{line}</p>;
+                        }
+
+                        return (
+                          <div key={`observation-${lineIndex}`} className="space-y-1">
+                            <p className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                              {detail.label}
+                            </p>
+                            <p>{detail.content}</p>
+                          </div>
+                        );
+                      })
+                    : section.lines.map((line, lineIndex) => <p key={`section-line-${lineIndex}`}>{line}</p>)}
+                </div>
+              </section>
+            );
+          })}
+        </div>
       </div>
     </article>
   );
+}
+
+function getSectionHeadingClassName(key: InterpretationSectionKey): string {
+  if (key === "keyObservations") {
+    return "text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]";
+  }
+
+  return "text-[0.92rem] font-semibold tracking-[0.01em] text-[var(--foreground)]";
+}
+
+function splitObservationLine(line: string): { label: string; content: string } | null {
+  const separatorIndex = line.indexOf(":");
+  if (separatorIndex <= 0) {
+    return null;
+  }
+
+  const label = line.slice(0, separatorIndex).trim();
+  const content = line.slice(separatorIndex + 1).trim();
+  if (!label || !content) {
+    return null;
+  }
+
+  return { label, content };
 }

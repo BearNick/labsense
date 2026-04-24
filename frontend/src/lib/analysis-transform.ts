@@ -8,6 +8,7 @@ import type {
 } from "@/lib/types";
 import { DEFAULT_LOCALE, formatMessage, getMessages, type Locale } from "@/lib/i18n";
 import { parseInterpretationSections } from "@/lib/interpretation-sections";
+import { addBaseTextVariant, extractLocalizedTextVariants } from "@/lib/results-localization";
 import type { RiskStatus } from "@/lib/types";
 
 type Range = {
@@ -161,6 +162,69 @@ export function buildSummary(
   };
 }
 
+type SummarySeverity = "CRITICAL" | "SIGNIFICANT" | "MODERATE" | "MILD" | "NORMAL";
+
+function getValidatedFindingsMeta(meta: Record<string, unknown> | undefined): Record<string, unknown> | null {
+  const validatedFindings = meta?.validated_findings;
+  return validatedFindings && typeof validatedFindings === "object" ? (validatedFindings as Record<string, unknown>) : null;
+}
+
+function getSummarySeverity(
+  locale: Locale,
+  riskStatus: RiskStatus | null | undefined,
+  meta?: Record<string, unknown>
+): { label: string; severity: SummarySeverity | null } {
+  const t = getMessages(locale);
+  const validatedFindings = getValidatedFindingsMeta(meta);
+  const rawSeverity = typeof validatedFindings?.severity === "string" ? validatedFindings.severity.toUpperCase() : null;
+  const severity = (
+    rawSeverity === "CRITICAL" ||
+    rawSeverity === "SIGNIFICANT" ||
+    rawSeverity === "MODERATE" ||
+    rawSeverity === "MILD" ||
+    rawSeverity === "NORMAL"
+  )
+    ? (rawSeverity as SummarySeverity)
+    : null;
+
+  if (!severity) {
+    return { label: riskStatus?.label ?? t.riskStatus.green.label, severity: null };
+  }
+
+  const labelMap: Record<SummarySeverity, string> = {
+    CRITICAL: locale === "ru" ? "Критическое отклонение" : locale === "es" ? "Desviación crítica" : "Critical deviation",
+    SIGNIFICANT: locale === "ru" ? "Значимое отклонение" : locale === "es" ? "Desviación significativa" : "Significant deviation",
+    MODERATE: locale === "ru" ? "Нужно наблюдение" : locale === "es" ? "Necesita observación" : "Needs observation",
+    MILD: locale === "ru" ? "Лёгкое отклонение" : locale === "es" ? "Desviación leve" : "Mild deviation",
+    NORMAL: locale === "ru" ? "Норма" : locale === "es" ? "Normal" : "Normal"
+  };
+
+  return {
+    label: labelMap[severity],
+    severity
+  };
+}
+
+function getAbnormalMarkerCount(markers: Marker[], meta?: Record<string, unknown>): number {
+  const validatedFindings = getValidatedFindingsMeta(meta);
+  const abnormalMarkers = validatedFindings?.abnormal_markers;
+  if (Array.isArray(abnormalMarkers)) {
+    return abnormalMarkers.length;
+  }
+  return markers.filter((marker) => marker.status === "high" || marker.status === "low").length;
+}
+
+function getSummaryStatusExplanation(locale: Locale, abnormalCount: number, riskStatus?: RiskStatus | null): string {
+  if (abnormalCount > 0) {
+    return locale === "ru"
+      ? "Обнаружены отклонения в показателях"
+      : locale === "es"
+        ? "Se detectaron desviaciones en los indicadores"
+        : "Deviations were detected in the markers";
+  }
+  return riskStatus?.explanation ?? getMessages(locale).riskStatus.green.explanation;
+}
+
 export function buildSummaryMessaging(input: {
   extractedCount: number;
   warnings: string[];
@@ -171,6 +235,7 @@ export function buildSummaryMessaging(input: {
   decisionKind?: "full" | "limited" | "extraction_issue";
   overviewText?: string | null;
   confidenceText?: string | null;
+  abnormalCount?: number;
 }): Pick<AnalysisSummary, "overview" | "confidence"> {
   const locale = input.locale ?? DEFAULT_LOCALE;
   const t = getMessages(locale);
@@ -188,7 +253,10 @@ export function buildSummaryMessaging(input: {
     };
   }
 
-  const abnormalCount = input.markers.filter((marker) => marker.status === "high" || marker.status === "low").length;
+  const abnormalCount =
+    typeof input.abnormalCount === "number"
+      ? input.abnormalCount
+      : input.markers.filter((marker) => marker.status === "high" || marker.status === "low").length;
   const allMarkersInRange = input.markers.length > 0 && input.markers.every((marker) => marker.status === "normal");
   const overallIsNormal = input.riskStatus?.color_key === "green";
   const warningsSuffix = input.warnings.length ? ` ${input.warnings[0]}` : "";
@@ -293,6 +361,7 @@ export function buildSessionData(input: {
   const hidePriorityNotes = decisionMeta?.hide_priority_notes === true;
   const abnormal = extractionIssue ? [] : markers.filter((marker) => marker.status === "high" || marker.status === "low");
   const interpretationText = input.interpretationResult?.interpretation?.trim() ?? "";
+  const responseMeta = (input.interpretationResult?.meta ?? {}) as Record<string, unknown>;
   const statusLabel = decisionMeta?.status_label || null;
   const statusExplanation = decisionMeta?.status_explanation || null;
   const confidenceText = decisionMeta?.confidence_text || null;
@@ -303,6 +372,20 @@ export function buildSessionData(input: {
   const confidenceLevel = decisionMeta?.confidence_level ?? input.parseResult.confidence_level ?? null;
   const confidenceExplanation = decisionMeta?.confidence_explanation ?? input.parseResult.confidence_explanation ?? null;
   const riskStatus = decisionKind !== "extraction_issue" ? (input.interpretationResult?.risk_status ?? null) : null;
+  const abnormalCount = extractionIssue ? 0 : getAbnormalMarkerCount(markers, responseMeta);
+  const summarySeverity = getSummarySeverity(locale, riskStatus, responseMeta);
+  const responseLanguage = typeof decisionMeta?.language === "string" ? decisionMeta.language : input.locale ?? null;
+  const interpretationTranslations = addBaseTextVariant(
+    extractLocalizedTextVariants(decisionMeta, "interpretation"),
+    responseLanguage,
+    interpretationText
+  );
+  const lifestyleRecommendations = input.interpretationResult?.lifestyle_recommendations ?? null;
+  const lifestyleRecommendationTranslations = addBaseTextVariant(
+    extractLocalizedTextVariants(decisionMeta, "lifestyleRecommendations"),
+    responseLanguage,
+    lifestyleRecommendations
+  );
 
   if (process.env.NODE_ENV !== "production") {
     console.debug("[analysis-transform] raw_values from API", input.parseResult.raw_values);
@@ -322,17 +405,21 @@ export function buildSessionData(input: {
         extractionIssue,
         decisionKind,
         overviewText: summaryOverview,
-        confidenceText
+        confidenceText,
+        abnormalCount
       })
     },
     riskStatus,
+    lifestyleRecommendations,
+    lifestyleRecommendationsByLocale: lifestyleRecommendationTranslations,
     rawValues: input.parseResult.raw_values,
     markers,
     abnormalMarkers: abnormal,
     interpretation: {
       status: interpretationText ? "ready" : "unavailable",
       text: interpretationText,
-      error: interpretationText ? null : input.interpretationError ?? getMessages(locale).interpretationCard.unavailable
+      error: interpretationText ? null : input.interpretationError ?? getMessages(locale).interpretationCard.unavailable,
+      translations: interpretationTranslations
     },
     recommendations: buildRecommendations(
       interpretationText,
@@ -342,20 +429,22 @@ export function buildSessionData(input: {
       recommendationTitle,
       recommendedAction
     ),
-    parseMeta: {
-      source: input.parseResult.source,
-      extractedCount: input.parseResult.extracted_count,
-      warnings: input.parseResult.warnings,
-      extractionIssue,
-      confidenceScore,
-      confidenceLevel,
-      confidenceExplanation,
-      decisionKind,
-      statusLabel,
-      statusExplanation,
-      hideMarkerCounts: decisionMeta?.hide_marker_counts === true,
-      hidePriorityNotes,
-      recommendedAction
-    }
+      parseMeta: {
+        source: input.parseResult.source,
+        extractedCount: input.parseResult.extracted_count,
+        warnings: input.parseResult.warnings,
+        extractionIssue,
+        confidenceScore,
+        confidenceLevel,
+        confidenceExplanation,
+        decisionKind,
+        statusLabel: statusLabel || (!extractionIssue ? summarySeverity.label : null),
+        statusExplanation:
+          statusExplanation || (!extractionIssue ? getSummaryStatusExplanation(locale, abnormalCount, riskStatus) : null),
+        recommendationTitle,
+        hideMarkerCounts: decisionMeta?.hide_marker_counts === true,
+        hidePriorityNotes,
+        recommendedAction
+      }
   };
 }

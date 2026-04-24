@@ -15,7 +15,7 @@ export default function AccountPage() {
     <PageShell title={messages.account.title} subtitle={messages.account.subtitle}>
       <section className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-5 shadow-panel md:p-7">
         <h2 className="text-lg font-semibold text-[var(--foreground)]">{messages.account.profile}</h2>
-        <p className="mt-4 inline-flex items-center gap-2 text-sm leading-6 text-[var(--muted-foreground)]">
+        <p className="text-theme-body mt-4 inline-flex items-center gap-2 text-sm leading-6">
           <UserRound className="h-4 w-4" />
           {messages.account.signInPrompt}
         </p>

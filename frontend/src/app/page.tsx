@@ -7,7 +7,6 @@ import { useI18n } from "@/components/labsense/locale-provider";
 import { PageShell } from "@/components/labsense/page-shell";
 import { AnalysisSummaryCard } from "@/components/labsense/analysis-summary-card";
 import { AbnormalMarkersCard } from "@/components/labsense/abnormal-markers-card";
-import { RotatingHeroTitle } from "@/components/labsense/rotating-hero-title";
 import { readAnalysisSession } from "@/lib/analysis-session";
 import { buildSummaryMessaging } from "@/lib/analysis-transform";
 import { buildMarkerRenderingState } from "@/lib/marker-rendering";
@@ -57,28 +56,22 @@ export default function LandingPage() {
 
   return (
     <PageShell
-      title={
-        <RotatingHeroTitle
-          leading={messages.landing.heroRotation.leading}
-          words={messages.landing.heroRotation.words}
-          trailing={messages.landing.heroRotation.trailing}
-        />
-      }
+      title={messages.landing.mainHeading}
       subtitle={messages.landing.subhead}
     >
       {loading ? (
-        <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 text-sm leading-6 text-[var(--muted-foreground)] shadow-panel">
+        <article className="text-theme-body rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 text-sm leading-6 shadow-panel">
           {messages.landing.loading}
         </article>
       ) : (
         <>
           <section className="grid gap-4 lg:items-stretch lg:grid-cols-[minmax(0,1.08fr)_minmax(340px,0.92fr)]">
             <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 shadow-panel md:p-8">
-              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted-foreground)]">{messages.common.appTag}</p>
-              <h3 className="mt-4 max-w-2xl text-2xl font-semibold tracking-[-0.03em] text-[var(--foreground)]">
+              <p className="text-theme-muted text-xs uppercase tracking-[0.2em]">{messages.common.appTag}</p>
+              <h2 className="text-theme-heading mt-4 max-w-2xl text-2xl font-semibold tracking-[-0.03em]">
                 {messages.landing.title}
-              </h3>
-              <p className="mt-4 max-w-xl text-sm leading-6 text-[var(--muted-foreground)]">
+              </h2>
+              <p className="text-theme-body mt-4 max-w-xl text-sm leading-6">
                 {messages.landing.description}
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
@@ -95,9 +88,9 @@ export default function LandingPage() {
                   {messages.landing.ctaSecondary}
                 </Link>
               </div>
-              <div className="mt-8 rounded-[1.5rem] border border-[var(--border)] bg-[var(--background)] p-4">
-                <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted-foreground)]">{messages.landing.premiumEyebrow}</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--foreground)]">
+              <div className="bg-theme-subtle mt-8 rounded-[1.5rem] border border-[var(--border)] p-4 dark:bg-[var(--background)]">
+                <p className="text-theme-muted text-xs uppercase tracking-[0.16em]">{messages.landing.premiumEyebrow}</p>
+                <p className="text-theme-heading mt-2 text-sm leading-6">
                   {messages.landing.premiumDescription}
                 </p>
               </div>
@@ -108,27 +101,28 @@ export default function LandingPage() {
                   summary={summary}
                   eyebrow={messages.summaryCard.eyebrow}
                   riskStatus={localResult.riskStatus}
+                  reportLanguage={locale}
                   parseMeta={localResult.parseMeta}
                 />
               </div>
             ) : (
               <article className="flex h-full min-h-[22rem] flex-col justify-between overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-6 shadow-panel md:p-8">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+                  <p className="text-theme-muted text-xs uppercase tracking-[0.16em]">
                     {messages.summaryCard.emptyEyebrow}
                   </p>
-                  <div className="mt-4 inline-flex rounded-full border border-[var(--border)] bg-[var(--background)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+                  <div className="bg-theme-subtle text-theme-muted mt-4 inline-flex rounded-full border border-[var(--border)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] dark:bg-[var(--background)]">
                     {messages.common.pdf}
                   </div>
-                  <h3 className="mt-4 max-w-md text-[1.8rem] font-semibold leading-tight tracking-[-0.04em] text-[var(--foreground)] md:text-[2.05rem]">
+                  <h2 className="text-theme-heading mt-4 max-w-md text-[1.8rem] font-semibold leading-tight tracking-[-0.04em] md:text-[2.05rem]">
                     {messages.summaryCard.emptyTitle}
-                  </h3>
-                  <p className="mt-4 max-w-xl text-sm leading-6 text-[var(--muted-foreground)]">
+                  </h2>
+                  <p className="text-theme-body mt-4 max-w-xl text-sm leading-6">
                     {messages.summaryCard.emptyBody}
                   </p>
                 </div>
-                <div className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-[var(--background)] p-4">
-                  <p className="text-sm leading-6 text-[var(--foreground)]">{messages.summaryCard.emptyFootnote}</p>
+                <div className="bg-theme-subtle mt-6 rounded-[1.5rem] border border-[var(--border)] p-4 dark:bg-[var(--background)]">
+                  <p className="text-theme-heading text-sm leading-6">{messages.summaryCard.emptyFootnote}</p>
                 </div>
               </article>
             )}

@@ -1,0 +1,28 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F5F7F8"/>
+  <circle cx="1025" cy="104" r="212" fill="#DDE7EC"/>
+  <circle cx="138" cy="566" r="244" fill="#E7EDF0"/>
+  <rect x="80" y="84" width="1040" height="462" rx="38" fill="white" fill-opacity="0.92"/>
+  <rect x="120" y="124" width="72" height="72" rx="22" fill="url(#bg)"/>
+  <path d="M143 140.5C137.8 144.9 135 151 135 154C135 157 137.8 163.1 143 167.5" stroke="url(#left)" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M169 140.5C174.2 144.9 177 151 177 154C177 157 174.2 163.1 169 167.5" stroke="url(#right)" stroke-width="4.5" stroke-linecap="round"/>
+  <text x="224" y="154" fill="#13202A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="42" font-weight="700">Labsense</text>
+  <text x="120" y="270" fill="#13202A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="64" font-weight="700">AI интерпретация анализов крови</text>
+  <text x="120" y="330" fill="#60707B" font-family="Avenir Next, Segoe UI, sans-serif" font-size="28">ОАК, биохимия, витамин D, CBC и международные лабораторные отчёты</text>
+  <rect x="120" y="390" width="210" height="54" rx="27" fill="#13202A"/>
+  <text x="154" y="425" fill="#F5F7F8" font-family="Avenir Next, Segoe UI, sans-serif" font-size="24" font-weight="600">labsense.app</text>
+  <defs>
+    <linearGradient id="bg" x1="127" y1="128" x2="180" y2="188" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16364A"/>
+      <stop offset="1" stop-color="#3C6A86"/>
+    </linearGradient>
+    <linearGradient id="left" x1="135" y1="140.5" x2="149" y2="165.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#CFE5F0"/>
+      <stop offset="1" stop-color="#8FC0D7"/>
+    </linearGradient>
+    <linearGradient id="right" x1="177" y1="140.5" x2="163" y2="165.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3F8FB"/>
+      <stop offset="1" stop-color="#BFDCEB"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -41,6 +41,7 @@ export const messages = {
       sourcePdfplumber: "PDF text fallback"
     },
     landing: {
+      mainHeading: "Blood Test Interpretation",
       headline: "Interpretation of blood tests",
       subhead: "Upload a lab report, review the key deviations, and get a calm, structured interpretation.",
       title: "About the project",
@@ -96,7 +97,9 @@ export const messages = {
       loadingBody: "Preparing your results...",
       emptySubtitle: "No report in this session yet.",
       emptyBody: "Upload a PDF report to see your summary, flagged markers, and interpretation.",
-      emptyCta: "Upload a report"
+      emptyCta: "Upload a report",
+      languageMismatchToast:
+        "Report created in another language. For an English version, upload the file again and select English before analysis."
     },
     history: {
       title: "History",
@@ -121,7 +124,11 @@ export const messages = {
         "If Labsense is useful, you can support the product with Stripe or PayPal. Support helps improve the AI, the report quality, and the product itself.",
       stripe: "Support via Stripe",
       paypal: "Support via PayPal",
-      telegramStarsPlaceholder: "Telegram Stars support will appear here when available"
+      telegramStarsPlaceholder: "Telegram Stars support will appear here when available",
+      resultsCtaTitle: "Support the project",
+      resultsCtaSubtitle: "If you found this report helpful, you can support the project",
+      resultsCtaStripe: "Pay with Stripe",
+      resultsCtaPaypal: "Pay with PayPal"
     },
     premium: {
       uploadEyebrow: "Support Labsense",
@@ -188,6 +195,10 @@ export const messages = {
     interpretationCard: {
       title: "Interpretation",
       unavailable: "Interpretation is not available right now.",
+      fields: {
+        mainCondition: "Main condition",
+        shortExplanation: "Short explanation"
+      },
       sections: {
         overallStatus: "Overall status",
         keyObservations: "Key observations",
@@ -201,6 +212,11 @@ export const messages = {
     recommendationsCard: {
       title: "Next steps",
       empty: "Recommendations will appear here when ready."
+    },
+    lifestyleCard: {
+      title: "Lifestyle recommendations",
+      preparing: "Preparing lifestyle recommendations...",
+      unavailable: "Lifestyle recommendations are unavailable for this report."
     },
     disclaimer: {
       title: "Medical notice",
@@ -271,6 +287,7 @@ export const messages = {
       sourcePdfplumber: "Текстовое извлечение из PDF"
     },
     landing: {
+      mainHeading: "Интерпретация анализа крови",
       headline: "Интерпретация анализов крови",
       subhead: "Загрузите лабораторный отчёт, проверьте ключевые отклонения и получите спокойное, структурированное объяснение.",
       title: "О проекте",
@@ -326,7 +343,9 @@ export const messages = {
       loadingBody: "Подготавливаем результаты...",
       emptySubtitle: "В этой сессии пока нет отчёта.",
       emptyBody: "Загрузите PDF-отчёт, чтобы увидеть сводку, отмеченные маркеры и интерпретацию.",
-      emptyCta: "Перейти к загрузке"
+      emptyCta: "Перейти к загрузке",
+      languageMismatchToast:
+        "Отчёт создан на другом языке. Для версии на русском загрузите файл заново и выберите русский перед анализом."
     },
     history: {
       title: "История",
@@ -351,7 +370,11 @@ export const messages = {
         "Если Labsense полезен, вы можете поддержать продукт через Stripe или PayPal. Поддержка помогает улучшать ИИ, качество отчётов и сам продукт.",
       stripe: "Поддержать через Stripe",
       paypal: "Поддержать через PayPal",
-      telegramStarsPlaceholder: "Поддержка через Telegram Stars появится здесь, когда станет доступна"
+      telegramStarsPlaceholder: "Поддержка через Telegram Stars появится здесь, когда станет доступна",
+      resultsCtaTitle: "Поддержать проект",
+      resultsCtaSubtitle: "Если отчёт был полезен, вы можете поддержать проект",
+      resultsCtaStripe: "Оплатить через Stripe",
+      resultsCtaPaypal: "Оплатить через PayPal"
     },
     premium: {
       uploadEyebrow: "Поддержать Labsense",
@@ -418,6 +441,10 @@ export const messages = {
     interpretationCard: {
       title: "Интерпретация",
       unavailable: "Интерпретация сейчас недоступна.",
+      fields: {
+        mainCondition: "Основное состояние",
+        shortExplanation: "Краткое пояснение"
+      },
       sections: {
         overallStatus: "Общий статус",
         keyObservations: "Ключевые наблюдения",
@@ -431,6 +458,11 @@ export const messages = {
     recommendationsCard: {
       title: "Следующие шаги",
       empty: "Рекомендации появятся здесь, когда будут готовы."
+    },
+    lifestyleCard: {
+      title: "Рекомендации по образу жизни",
+      preparing: "Подготавливаем рекомендации по образу жизни...",
+      unavailable: "Рекомендации по образу жизни недоступны для этого отчёта."
     },
     disclaimer: {
       title: "Медицинская оговорка",
@@ -501,6 +533,7 @@ export const messages = {
       sourcePdfplumber: "Lectura de texto del PDF"
     },
     landing: {
+      mainHeading: "Interpretación de análisis de sangre",
       headline: "Interpretación de análisis de sangre",
       subhead: "Sube tu informe, revisa los desvíos clave y recibe una interpretación serena y bien estructurada.",
       title: "Sobre el proyecto",
@@ -556,7 +589,9 @@ export const messages = {
       loadingBody: "Preparando tus resultados...",
       emptySubtitle: "Todavía no hay un informe en esta sesión.",
       emptyBody: "Sube un informe en PDF para ver el resumen, los marcadores señalados y la interpretación.",
-      emptyCta: "Subir informe"
+      emptyCta: "Subir informe",
+      languageMismatchToast:
+        "Informe creado en otro idioma. Para verlo en español, sube el archivo de nuevo y selecciona español antes del análisis."
     },
     history: {
       title: "Historial",
@@ -581,7 +616,11 @@ export const messages = {
         "Si Labsense te resulta útil, puedes apoyar el producto con Stripe o PayPal. El apoyo ayuda a mejorar la IA, la calidad del informe y el producto en general.",
       stripe: "Apoyar con Stripe",
       paypal: "Apoyar con PayPal",
-      telegramStarsPlaceholder: "La opción de apoyo con Telegram Stars aparecerá aquí cuando esté disponible"
+      telegramStarsPlaceholder: "La opción de apoyo con Telegram Stars aparecerá aquí cuando esté disponible",
+      resultsCtaTitle: "Apoyar el proyecto",
+      resultsCtaSubtitle: "Si este informe te resultó útil, puedes apoyar el proyecto",
+      resultsCtaStripe: "Pagar con Stripe",
+      resultsCtaPaypal: "Pagar con PayPal"
     },
     premium: {
       uploadEyebrow: "Apoyar Labsense",
@@ -648,19 +687,28 @@ export const messages = {
     interpretationCard: {
       title: "Interpretación",
       unavailable: "La interpretación no está disponible en este momento.",
+      fields: {
+        mainCondition: "Condición principal",
+        shortExplanation: "Explicación breve"
+      },
       sections: {
         overallStatus: "Estado general",
         keyObservations: "Observaciones clave",
         importance: "Importancia",
         whatThisMeans: "Qué significa",
         optionalImprovements: "Qué se puede mejorar",
-        nextSteps: "Siguientes pasos",
+        nextSteps: "Próximos pasos",
         finalConclusion: "Conclusión final"
       }
     },
     recommendationsCard: {
       title: "Siguientes pasos",
       empty: "Las recomendaciones aparecerán aquí cuando estén listas."
+    },
+    lifestyleCard: {
+      title: "Recomendaciones de estilo de vida",
+      preparing: "Preparando recomendaciones de estilo de vida...",
+      unavailable: "Las recomendaciones de estilo de vida no están disponibles para este informe."
     },
     disclaimer: {
       title: "Aviso médico",

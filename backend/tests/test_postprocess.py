@@ -1,5 +1,6 @@
 import sys
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, "/opt/labsense/backend")
 
@@ -88,6 +89,17 @@ class PostprocessRegressionTests(unittest.TestCase):
 
         self.assertIsNotNone(detail)
         self.assertIsNone(detail.reference_range)
+
+    def test_whitelisted_simple_rows_return_before_generic_cell_selection(self) -> None:
+        rows = [["АЛТ", "9.2", "Ед/л", "< 33"]]
+
+        with patch("parser.postprocess.extract_value", side_effect=AssertionError("smart path should be skipped")):
+            with self.assertLogs("parser.postprocess", level="DEBUG") as captured:
+                detail = build_marker_detail_from_row(rows, 0)
+
+        self.assertIsNotNone(detail)
+        self.assertEqual(detail.value, 9.2)
+        self.assertTrue(any("marker=ALT path=whitelist_override value=9.2" in line for line in captured.output))
 
     def test_canonical_merge_keeps_existing_single_marker_name(self) -> None:
         raw_values = {"Гемоглобин": 135.0}

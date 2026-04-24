@@ -1,8 +1,10 @@
 from app.schemas.analysis import InterpretationResponse
-from app.services.clinical_consistency import build_pre_llm_validated_context
+from app.services.clinical_consistency import build_pre_llm_validated_context, enforce_final_consistency
 from parser.source_selection import normalize_raw_values
 from app.services.interpretation_payload import normalize_interpretation_markers
+from app.services.lifestyle_recommendations import generate_lifestyle_recommendations
 from interpreter.analyze import generate_interpretation
+from interpreter.risk import assess_risk_details, compute_risk_status
 
 
 def _normalize_interpretation_payload(payload: dict[str, object]) -> dict[str, object]:
@@ -101,12 +103,35 @@ class InterpretationService:
             "__validated_findings__": validated_context,
         }
         summary = generate_interpretation(interpretation_payload)
+        language = str(normalized_payload.get("language", "en"))
+        raw_risk_status = compute_risk_status(normalized_payload, language)
+        abnormal_markers = assess_risk_details(normalized_payload, language).abnormal_markers
+        summary, risk_status, validated_findings, consistency_issues = enforce_final_consistency(
+            summary,
+            payload=normalized_payload,
+            abnormal_markers=abnormal_markers,
+            risk_status=raw_risk_status,
+            language=language,
+        )
+        lifestyle_recommendations: str | None = None
+        try:
+            lifestyle_recommendations = generate_lifestyle_recommendations(
+                normalized_payload,
+                language=language,
+                risk_status=risk_status,
+            )
+        except Exception:
+            lifestyle_recommendations = None
+        meta = _build_integrity_meta(
+            normalized_payload=normalized_payload,
+            validated_context=validated_context,
+            gating_reasons=gating_reasons,
+        )
+        meta["validated_findings"] = validated_findings
+        meta["consistency_issues"] = consistency_issues
         return InterpretationResponse(
             summary=summary,
-            risk_status=None,
-            meta=_build_integrity_meta(
-                normalized_payload=normalized_payload,
-                validated_context=validated_context,
-                gating_reasons=gating_reasons,
-            ),
+            risk_status=risk_status,
+            lifestyle_recommendations=lifestyle_recommendations,
+            meta=meta,
         )

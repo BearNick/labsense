@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import logging
 from typing import Optional
 
 try:
@@ -10,6 +11,8 @@ except Exception:  # pragma: no cover - optional dependency in test env
 
 from parser.config import resolve_pdf_page_limit
 from parser.extract_pdf import (
+    _extract_simple_positional_override_value,
+    _slice_after_alias,
     extract_lab_data_from_pdf,
     extract_reference_range,
     extract_unit,
@@ -17,6 +20,9 @@ from parser.extract_pdf import (
     match_indicator,
     match_indicator_with_alias,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 _CANONICAL_GROUPS: dict[str, set[str]] = {
@@ -460,6 +466,23 @@ def _extract_value_from_row(row: list[str], name: str, alias: str) -> Optional[f
 
     if alias_cell_index == -1:
         return None
+
+    linear_row_text = " ".join(cell.strip() for cell in row[alias_cell_index:] if cell.strip())
+    if linear_row_text:
+        source_text = _slice_after_alias(linear_row_text, alias)
+        positional_override = _extract_simple_positional_override_value(
+            line=linear_row_text,
+            source_text=source_text,
+            metric_name=name,
+            matched_alias=alias,
+        )
+        if positional_override is not None:
+            logger.debug(
+                "value_selection marker=%s path=simple_scalar_early_return value=%s",
+                name,
+                positional_override,
+            )
+            return positional_override
 
     for cell in row[alias_cell_index + 1:]:
         if not cell.strip():

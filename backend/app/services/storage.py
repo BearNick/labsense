@@ -4,7 +4,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from app.schemas.analysis import AnalysisRecord, LabValuePayload
-from parser.marker_metadata import get_marker_metadata
+from app.services.display_semantics import resolve_lab_value_display
 from parser.postprocess import MarkerDetail
 
 
@@ -19,28 +19,22 @@ class LocalAnalysisStore:
         marker_details: dict[str, MarkerDetail] | None = None,
     ) -> AnalysisRecord:
         marker_details = marker_details or {}
+        values: list[LabValuePayload] = []
+        for name, value in raw_values.items():
+            unit, reference_range = resolve_lab_value_display(name, marker_details.get(name))
+            values.append(
+                LabValuePayload(
+                    name=name,
+                    value=value,
+                    unit=unit,
+                    reference_range=reference_range,
+                )
+            )
         record = AnalysisRecord(
             id=uuid4().hex,
             created_at=datetime.now(UTC),
             status="parsed",
-            values=[
-                LabValuePayload(
-                    name=name,
-                    value=value,
-                    unit=(
-                        marker_details.get(name).unit
-                        if marker_details.get(name) and marker_details.get(name).unit
-                        else (metadata.get("unit") if metadata else None)
-                    ),
-                    reference_range=(
-                        marker_details.get(name).reference_range
-                        if marker_details.get(name) and marker_details.get(name).reference_range
-                        else (metadata.get("reference_range") if metadata else None)
-                    ),
-                )
-                for name, value in raw_values.items()
-                for metadata in [get_marker_metadata(name)]
-            ]
+            values=values,
         )
         self._write(record)
         return record

@@ -3,12 +3,14 @@
 import { Activity, AlertCircle, ShieldAlert, ShieldCheck } from "lucide-react";
 
 import { useI18n } from "@/components/labsense/locale-provider";
+import { getMessages, type Locale } from "@/lib/i18n";
 import { getStatusAppearance, resolveStatusTone, type StatusTone } from "@/lib/status-appearance";
 import type { AnalysisSummary, RiskStatus } from "@/lib/types";
 
 interface AnalysisSummaryCardProps {
   summary: AnalysisSummary;
   riskStatus?: RiskStatus | null;
+  reportLanguage: Locale;
   eyebrow?: string;
   parseMeta: {
     source: string;
@@ -41,27 +43,30 @@ function StatusIcon({ tone }: { tone: StatusTone }) {
   return <ShieldAlert className="h-5 w-5" />;
 }
 
-export function AnalysisSummaryCard({ summary, riskStatus, eyebrow, parseMeta }: AnalysisSummaryCardProps) {
+export function AnalysisSummaryCard({ summary, riskStatus, reportLanguage, eyebrow, parseMeta }: AnalysisSummaryCardProps) {
   const { messages } = useI18n();
+  const reportMessages = getMessages(reportLanguage);
   const extractionIssue = parseMeta.extractionIssue;
   const lowConfidence = parseMeta.decisionKind === "limited" && parseMeta.confidenceLevel === "low" && !extractionIssue;
-  const localizedRisk = riskStatus ? messages.riskStatus[riskStatus.color_key] : null;
   const tone = resolveStatusTone(riskStatus, extractionIssue || parseMeta.decisionKind === "limited");
   const appearance = getStatusAppearance(tone);
   const statusLabel =
-    parseMeta.statusLabel ||
-    (extractionIssue ? messages.generated.extractionIssueTitle : localizedRisk?.label ?? riskStatus?.label ?? messages.riskStatus.green.label);
+    parseMeta.statusLabel ??
+    riskStatus?.label ??
+    (extractionIssue ? reportMessages.generated.extractionIssueTitle : null) ??
+    reportMessages.riskStatus.green.label;
   const statusMeaning =
     parseMeta.statusExplanation ??
-    (extractionIssue ? messages.generated.extractionIssueOverview : localizedRisk?.explanation ?? riskStatus?.explanation ?? messages.riskStatus.green.explanation);
+    riskStatus?.explanation ??
+    (extractionIssue ? reportMessages.generated.extractionIssueOverview : null) ??
+    reportMessages.riskStatus.green.explanation;
   const showOverview = !(lowConfidence && summary.overview === summary.confidence);
-  const showConfidenceText = !lowConfidence;
 
   return (
     <article className={`h-fit overflow-hidden rounded-[2rem] border bg-[var(--card)] shadow-panel ${appearance.hero}`}>
       <div className="grid gap-4 p-5 md:p-6 xl:grid-cols-[minmax(0,1.18fr)_minmax(210px,0.82fr)] xl:gap-5 xl:p-7">
         <div className="min-w-0">
-          <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+          <p className="text-theme-muted text-xs uppercase tracking-[0.16em]">
             {eyebrow ?? messages.summaryCard.eyebrow}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -72,17 +77,17 @@ export function AnalysisSummaryCard({ summary, riskStatus, eyebrow, parseMeta }:
               <div className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${appearance.badge}`}>
                 {statusLabel}
               </div>
-              <h3 className="mt-3 text-[1.75rem] font-semibold leading-tight tracking-[-0.04em] text-[var(--foreground)] text-balance md:text-[2rem] xl:text-[2.15rem]">
+              <h2 className="text-theme-heading mt-3 text-[1.75rem] font-semibold leading-tight tracking-[-0.04em] text-balance md:text-[2rem] xl:text-[2.15rem]">
                 {summary.title}
-              </h3>
+              </h2>
             </div>
           </div>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-[var(--foreground)]/80">{statusMeaning}</p>
-          {showOverview ? <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">{summary.overview}</p> : null}
+          <p className="text-theme-body mt-4 max-w-2xl text-sm leading-6">{statusMeaning}</p>
+          {showOverview ? <p className="text-theme-muted mt-3 max-w-2xl text-sm leading-6">{summary.overview}</p> : null}
         </div>
         <div className={`self-start rounded-[1.6rem] border p-4 md:p-5 ${appearance.panel}`}>
           {extractionIssue ? (
-            <p className="text-sm leading-6 text-[var(--foreground)]/82">{summary.confidence}</p>
+            <p className="text-theme-body text-sm leading-6">{summary.confidence}</p>
           ) : (
             <div className="flex flex-wrap items-start gap-2">
               <div className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${appearance.badge}`}>
@@ -92,7 +97,7 @@ export function AnalysisSummaryCard({ summary, riskStatus, eyebrow, parseMeta }:
             </div>
           )}
           {!parseMeta.hidePriorityNotes && !extractionIssue && riskStatus?.priority_notes.length ? (
-            <ul className="mt-4 space-y-2 text-sm leading-6 text-[var(--foreground)]/82">
+            <ul className="text-theme-body mt-4 space-y-2 text-sm leading-6">
               {riskStatus.priority_notes.map((note) => (
                 <li key={note} className="flex items-start gap-3">
                   <span className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${appearance.accent}`} />
@@ -100,26 +105,24 @@ export function AnalysisSummaryCard({ summary, riskStatus, eyebrow, parseMeta }:
                 </li>
               ))}
             </ul>
-          ) : (
-            !extractionIssue && showConfidenceText ? <p className="mt-4 text-sm leading-6 text-[var(--muted-foreground)]">{summary.confidence}</p> : null
-          )}
+          ) : null}
         </div>
       </div>
       <div className="border-t border-[var(--border)]/80 px-5 py-4 md:px-6 xl:px-7">
-        <div className="grid gap-x-4 gap-y-2 text-sm text-[var(--muted-foreground)] sm:grid-cols-2">
+        <div className="text-theme-body grid gap-x-4 gap-y-2 text-sm sm:grid-cols-2">
           <p className="min-w-0">
-            <span className="font-medium text-[var(--foreground)]">{messages.common.captured}:</span>{" "}
+            <span className="text-theme-heading font-medium">{messages.common.captured}:</span>{" "}
             <span className="whitespace-nowrap">{summary.capturedAt}</span>
           </p>
           <p className="min-w-0">
-            <span className="font-medium text-[var(--foreground)]">{messages.common.source}:</span> {summary.labSource}
+            <span className="text-theme-heading font-medium">{messages.common.source}:</span> {summary.labSource}
           </p>
           <p className="min-w-0">
-            <span className="font-medium text-[var(--foreground)]">{messages.common.processing}:</span> {resolveProcessingSource(parseMeta.source, messages)}
+            <span className="text-theme-heading font-medium">{messages.common.processing}:</span> {resolveProcessingSource(parseMeta.source, messages)}
           </p>
           {!parseMeta.hideMarkerCounts ? (
             <p className="min-w-0">
-              <span className="font-medium text-[var(--foreground)]">{messages.common.markersExtracted}:</span> {parseMeta.extractedCount}
+              <span className="text-theme-heading font-medium">{messages.common.markersExtracted}:</span> {parseMeta.extractedCount}
             </p>
           ) : null}
         </div>

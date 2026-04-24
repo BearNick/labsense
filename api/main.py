@@ -110,5 +110,6 @@ async def interpret(request: InterpretLabDataRequest) -> InterpretLabDataRespons
     return InterpretLabDataResponse(
         interpretation=text,
         risk_status=risk_status,
-        meta=plan.build_meta(language=request.language, markers_supplied=len(request.raw_values)),
+        lifestyle_recommendations=result.get("lifestyle_recommendations"),
+        meta=result.get("meta") or plan.build_meta(language=request.language, markers_supplied=len(request.raw_values)),
     )

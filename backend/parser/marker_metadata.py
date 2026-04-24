@@ -40,6 +40,21 @@ METRIC_METADATA: dict[str, MarkerMetadata] = {
     "Эритроциты": {"unit": "x10^12/L", "reference_range": "3.8 - 5.8"},
     "СОЭ": {"unit": "mm/h", "reference_range": "< 20"},
     "Витамин D (25-OH)": {"unit": "ng/mL", "reference_range": "30 - 100"},
+    "Нейтрофилы %": {"unit": "%", "reference_range": "47 - 72"},
+    "Лимфоциты %": {"unit": "%", "reference_range": "19 - 37"},
+    "Моноциты %": {"unit": "%", "reference_range": "3 - 11"},
+    "Эозинофилы %": {"unit": "%", "reference_range": "0.5 - 5"},
+    "Базофилы %": {"unit": "%", "reference_range": "0 - 1"},
+    "Нейтрофилы абс.": {"unit": "x10^9/L", "reference_range": "1.5 - 7.7"},
+    "Лимфоциты абс.": {"unit": "x10^9/L", "reference_range": "1.0 - 4.8"},
+    "Моноциты абс.": {"unit": "x10^9/L", "reference_range": "0.12 - 1.2"},
+    "Эозинофилы абс.": {"unit": "x10^9/L", "reference_range": "0.02 - 0.5"},
+    "Базофилы абс.": {"unit": "x10^9/L", "reference_range": "0 - 0.1"},
+    "RE-LYMP %": {"unit": "%", "reference_range": "0 - 5"},
+    "RE-LYMP abs": {"unit": "x10^9/L", "reference_range": "0 - 0.3"},
+    "AS-LYMP %": {"unit": "%", "reference_range": "0 - 1"},
+    "AS-LYMP abs": {"unit": "x10^9/L", "reference_range": "0 - 0.1"},
+    "NRBC": {"unit": "%", "reference_range": "0 - 0"},
 }
 
 

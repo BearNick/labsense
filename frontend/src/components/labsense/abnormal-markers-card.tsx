@@ -19,8 +19,8 @@ export function AbnormalMarkersCard({ markers, allMarkersCount, extractionIssue 
   if (extractionIssue) {
     return (
       <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-5 shadow-panel md:p-7">
-        <h3 className="text-lg font-semibold text-[var(--foreground)]">{messages.markersCard.title}</h3>
-        <p className="mt-4 rounded-[1.4rem] bg-[var(--background)] p-4 text-sm leading-6 text-[var(--muted-foreground)]">
+        <h2 className="text-lg font-semibold text-[var(--foreground)]">{messages.markersCard.title}</h2>
+        <p className="bg-theme-subtle text-theme-body mt-4 rounded-[1.4rem] p-4 text-sm leading-6 dark:bg-[var(--background)]">
           {messages.generated.extractionIssueMarkersHidden}
         </p>
       </article>
@@ -30,16 +30,16 @@ export function AbnormalMarkersCard({ markers, allMarkersCount, extractionIssue 
   if (!markers.length) {
     return (
       <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-5 shadow-panel md:p-7">
-        <h3 className="text-lg font-semibold text-[var(--foreground)]">{messages.markersCard.title}</h3>
-        <p className="mt-4 rounded-[1.4rem] bg-[var(--background)] p-4 text-sm leading-6 text-[var(--muted-foreground)]">{messages.markersCard.empty}</p>
+        <h2 className="text-lg font-semibold text-[var(--foreground)]">{messages.markersCard.title}</h2>
+        <p className="bg-theme-subtle text-theme-body mt-4 rounded-[1.4rem] p-4 text-sm leading-6 dark:bg-[var(--background)]">{messages.markersCard.empty}</p>
       </article>
     );
   }
 
   return (
     <article className="rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-5 shadow-panel md:p-7">
-      <h3 className="text-lg font-semibold text-[var(--foreground)]">{messages.markersCard.title}</h3>
-      <p className="mt-1 text-sm leading-6 text-[var(--muted-foreground)]">
+      <h2 className="text-lg font-semibold text-[var(--foreground)]">{messages.markersCard.title}</h2>
+      <p className="text-theme-body mt-1 text-sm leading-6">
         {formatMessage(messages.markersCard.showing, { visible: markers.length, total: allMarkersCount })}
       </p>
       <ul className="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-2">
@@ -52,7 +52,7 @@ export function AbnormalMarkersCard({ markers, allMarkersCount, extractionIssue 
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-[var(--foreground)]">{marker.name}</p>
                   <p className={`mt-1 text-sm font-medium ${appearance.value}`}>{marker.value}</p>
-                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+                  <p className="text-theme-muted mt-1 text-xs">
                     {marker.reference ? `${messages.common.reference} ${marker.reference}` : messages.markersCard.referenceUnavailable}
                   </p>
                 </div>

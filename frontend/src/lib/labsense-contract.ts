@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+const localizedTextVariantsSchema = z.object({
+  en: z.string().optional(),
+  ru: z.string().optional(),
+  es: z.string().optional()
+});
+
 export const markerStatusSchema = z.enum(["normal", "high", "low", "unknown"]);
 
 export const markerSchema = z.object({
@@ -92,6 +98,7 @@ export const interpretLabDataRequestSchema = z.object({
 export const interpretLabDataResponseSchema = z.object({
   interpretation: z.string(),
   risk_status: riskStatusSchema.nullish(),
+  lifestyle_recommendations: z.string().nullable().optional(),
   meta: z
     .object({
       language: z.string().optional(),
@@ -118,13 +125,16 @@ export const interpretLabDataResponseSchema = z.object({
 export const interpretationStateSchema = z.object({
   status: z.enum(["ready", "unavailable"]),
   text: z.string(),
-  error: z.string().nullable()
+  error: z.string().nullable(),
+  translations: localizedTextVariantsSchema.default({})
 });
 
 export const analysisSessionDataSchema = z.object({
   uploadId: z.string().min(1),
   summary: analysisSummarySchema,
   riskStatus: riskStatusSchema.nullish(),
+  lifestyleRecommendations: z.string().nullable().default(null),
+  lifestyleRecommendationsByLocale: localizedTextVariantsSchema.default({}),
   rawValues: z.record(z.string(), z.number().nullable()).default({}),
   markers: z.array(markerSchema),
   abnormalMarkers: z.array(markerSchema),
@@ -141,6 +151,7 @@ export const analysisSessionDataSchema = z.object({
     decisionKind: z.enum(["full", "limited", "extraction_issue"]).default("full"),
     statusLabel: z.string().nullable().default(null),
     statusExplanation: z.string().nullable().default(null),
+    recommendationTitle: z.string().nullable().default(null),
     hideMarkerCounts: z.boolean().default(false),
     hidePriorityNotes: z.boolean().default(false),
     recommendedAction: z.string().nullable().default(null)

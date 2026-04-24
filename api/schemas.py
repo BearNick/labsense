@@ -68,6 +68,7 @@ class RiskStatusResponse(BaseModel):
 class InterpretLabDataResponse(BaseModel):
     interpretation: str
     risk_status: RiskStatusResponse | None = None
+    lifestyle_recommendations: str | None = None
     meta: dict[str, Any] = Field(default_factory=dict)
 
 

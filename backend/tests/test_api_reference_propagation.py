@@ -99,6 +99,95 @@ class ApiReferencePropagationTests(unittest.TestCase):
         self.assertEqual(payload_by_name["ACR"]["reference_range"], "< 3.5")
 
     @unittest.skipUnless(HAVE_API_DEPS, "api dependencies are not installed")
+    def test_build_lab_value_payloads_keep_percent_and_absolute_semantics_separate(self) -> None:
+        raw_values = {
+            "Нейтрофилы %": 58.4,
+            "Нейтрофилы абс.": 3.62,
+            "Базофилы %": 0.7,
+            "Базофилы абс.": 0.04,
+        }
+        marker_details = {
+            "Нейтрофилы %": MarkerDetail(
+                name="Нейтрофилы %",
+                value=58.4,
+                unit="x10^9/L",
+                reference_range="1.5 - 7.7",
+                source_text="Нейтрофилы % 58,4 % 47-72",
+                confidence=8.0,
+            ),
+            "Нейтрофилы абс.": MarkerDetail(
+                name="Нейтрофилы абс.",
+                value=3.62,
+                unit="x10^9/L",
+                reference_range="1.5 - 7.7",
+                source_text="Нейтрофилы абс. 3,62 10^9/л 1,5-7,7",
+                confidence=8.0,
+            ),
+            "Базофилы %": MarkerDetail(
+                name="Базофилы %",
+                value=0.7,
+                unit="x10^9/L",
+                reference_range="0 - 0.1",
+                source_text="Базофилы % 0,7 % 0-1",
+                confidence=8.0,
+            ),
+            "Базофилы абс.": MarkerDetail(
+                name="Базофилы абс.",
+                value=0.04,
+                unit="x10^9/L",
+                reference_range="0 - 0.1",
+                source_text="Базофилы абс. 0,04 10^9/л 0-0,1",
+                confidence=8.0,
+            ),
+        }
+
+        payload_by_name = {item["name"]: item for item in build_lab_value_payloads(raw_values, marker_details)}
+
+        self.assertEqual(payload_by_name["Нейтрофилы %"]["value"], 58.4)
+        self.assertEqual(payload_by_name["Нейтрофилы %"]["unit"], "%")
+        self.assertNotEqual(payload_by_name["Нейтрофилы %"]["unit"], "x10^9/L")
+        self.assertEqual(payload_by_name["Нейтрофилы %"]["reference_range"], "47 - 72")
+
+        self.assertEqual(payload_by_name["Нейтрофилы абс."]["value"], 3.62)
+        self.assertEqual(payload_by_name["Нейтрофилы абс."]["unit"], "x10^9/L")
+        self.assertEqual(payload_by_name["Нейтрофилы абс."]["reference_range"], "1.5 - 7.7")
+
+        self.assertEqual(payload_by_name["Базофилы %"]["value"], 0.7)
+        self.assertEqual(payload_by_name["Базофилы %"]["unit"], "%")
+        self.assertNotEqual(payload_by_name["Базофилы %"]["unit"], "x10^9/L")
+        self.assertEqual(payload_by_name["Базофилы %"]["reference_range"], "0 - 1")
+
+        self.assertEqual(payload_by_name["Базофилы абс."]["value"], 0.04)
+        self.assertEqual(payload_by_name["Базофилы абс."]["unit"], "x10^9/L")
+        self.assertEqual(payload_by_name["Базофилы абс."]["reference_range"], "0 - 0.1")
+
+    @unittest.skipUnless(HAVE_API_DEPS, "api dependencies are not installed")
+    def test_build_lab_value_payloads_preserve_absolute_references_for_absolute_differential_slots(self) -> None:
+        raw_values = {
+            "Нейтрофилы абс.": 4.1,
+            "Лимфоциты абс.": 1.9,
+            "Моноциты абс.": 0.4,
+            "Эозинофилы абс.": 0.1,
+            "Базофилы абс.": 0.03,
+        }
+        marker_details = {
+            "Нейтрофилы абс.": _marker_detail("Нейтрофилы абс.", "1.8 - 7.7", "x10^9/L", 4.1),
+            "Лимфоциты абс.": _marker_detail("Лимфоциты абс.", "1.0 - 4.8", "x10^9/L", 1.9),
+            "Моноциты абс.": _marker_detail("Моноциты абс.", "0.2 - 0.8", "x10^9/L", 0.4),
+            "Эозинофилы абс.": _marker_detail("Эозинофилы абс.", "0.0 - 0.5", "x10^9/L", 0.1),
+            "Базофилы абс.": _marker_detail("Базофилы абс.", "0.0 - 0.1", "x10^9/L", 0.03),
+        }
+
+        payload_by_name = {item["name"]: item for item in build_lab_value_payloads(raw_values, marker_details)}
+
+        self.assertEqual(payload_by_name["Нейтрофилы абс."]["unit"], "x10^9/L")
+        self.assertEqual(payload_by_name["Нейтрофилы абс."]["reference_range"], "1.8 - 7.7")
+        self.assertEqual(payload_by_name["Лимфоциты абс."]["reference_range"], "1.0 - 4.8")
+        self.assertEqual(payload_by_name["Моноциты абс."]["reference_range"], "0.2 - 0.8")
+        self.assertEqual(payload_by_name["Эозинофилы абс."]["reference_range"], "0.0 - 0.5")
+        self.assertEqual(payload_by_name["Базофилы абс."]["reference_range"], "0.0 - 0.1")
+
+    @unittest.skipUnless(HAVE_API_DEPS, "api dependencies are not installed")
     @patch("api.main.parse_lab_pdf")
     def test_upload_route_exposes_reference_ranges_in_api_payload(self, parse_lab_pdf_mock) -> None:
         raw_values = {name: value for name, (_, _, value) in WESTERN_REFERENCE_CASES.items()}
